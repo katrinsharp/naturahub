@@ -1,0 +1,92 @@
+@()(implicit request: RequestHeader)
+
+<!-- reply move form -->
+<script src="@routes.Assets.at("javascripts/moveform.js")"></script>
+
+@main("NaturaHub") {
+
+<body class="page" onload="">
+	<!-- MAIN -->
+	<div id="main">
+		<div class="wrapper cf">
+
+			<!-- page content-->
+			<div id="page-content" class="cf">
+
+				<p>
+					<h3>ADD RECIPE</h3>
+				</p>
+				<p>
+					Use this form to add a new exiting recipe.
+				</p>
+				<!-- form -->
+				<script type="text/javascript" src="@routes.Assets.at("javascripts/form-validation.js")"></script>
+				<form id="contactForm" action="#" method="post">
+					<fieldset>
+
+						<p>
+							<label for="name" >Recipe Name *</label>
+							<input name="name"  id="name" type="text" class="form-poshytip" title="Enter recipe name" />
+						</p>
+						
+						<p>
+							<label for="shortDesc">Short description *</label>
+							<textarea  name="shortDesc"  id="shortDesc" rows="5" cols="20" class="form-poshytip" title="Enter short description. It will show up in search results."></textarea>
+						</p>
+						
+						<p>
+							<label for="about">Ingredients *</label>
+							<textarea  name="ingredients"  id="ingredients" rows="5" cols="20" class="form-poshytip" title="Enter recioe ingredients"></textarea>
+						</p>
+						
+						<p>
+							<label for="prepTime">Prep Time</label>
+							<input name="prepTime"  id="prepTime" type="text" class="form-poshytip" title="How long it takes to prepare a recipe" />
+						</p>
+						
+						<p>
+							<label for="recipeYield">Recipe Yield</label>
+							<input name="recipeYield"  id="recipeYield" type="text" class="form-poshytip" title="The resulted quantity" />
+						</p>
+						
+						<p>
+							<label for="content">Directions</label>
+							<textarea  name="directions"  id="directions" rows="5" cols="20" class="form-poshytip" title="Enter the recipe itself"></textarea>
+						</p>
+						
+						<p>
+							<label for="level">Difficulty level</label>
+							<textarea  name="level"  id="level" rows="5" cols="20" class="form-poshytip" title="How difficult is to prepare this recipe"></textarea>
+						</p>
+						
+						<p>
+							<label for="tags">Categories/Tags</label>
+							<textarea  name="tags"  id="tags" rows="5" cols="20" class="form-poshytip" title="Categorize your recipe. It will help others to find your recipe."></textarea>
+						</p>
+
+						<!-- send mail configuration -->
+						<input type="hidden" value="your@@email.com" name="to" id="to" />
+						<input type="hidden" value="Enter the subject here" name="subject" id="subject" />
+						<input type="hidden" value="send-mail.php" name="sendMailUrl" id="sendMailUrl" />
+						<!-- ENDS send mail configuration -->
+
+						<p>
+							<input type="button" value="Submit" name="submit" id="submit" />
+							<span id="error" class="warning">Message</span>
+						</p>
+					</fieldset>
+
+				</form>
+				<p id="sent-form-msg" class="success">
+					Form data sent. Thanks for your comments.
+				</p>
+				<!-- ENDS form -->
+
+			</div>
+			<!-- ENDS page content-->
+
+		</div><!-- ENDS WRAPPER -->
+	</div>
+	<!-- ENDS MAIN -->
+</body>
+}

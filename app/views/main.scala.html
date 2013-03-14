@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit request: RequestHeader)
 
 <!DOCTYPE html>
 
@@ -8,7 +8,7 @@
     	<meta charset="utf-8"/>
 		
         <title>@title</title>
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
 		 
 		<!--[if lt IE 9]>
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js")"></script>
@@ -79,6 +79,11 @@
 		
     </head>
     <body>
+    	@if(request.path=="/"){
+    		@header_main()
+    	} else {
+    		@header_page()
+    	}
         @content
         @footer()
     </body>
