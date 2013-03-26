@@ -51,7 +51,10 @@
 							<strong>Date </strong> @recipe.created
 						</p>
 						<p>
-							<a href="http://www.luiszuno.com" class="launch" >Launch Project</a>
+							<a href="@routes.RecipeController.edit(recipe.id)" class="launch" >Edit Recipe</a>
+						</p>
+						<p>
+							<a href="@routes.RecipeController.delete(recipe.id)" class="launch" >Delete Recipe</a>
 						</p>
 					</div>
 
@@ -74,7 +77,7 @@
 
 				<!-- related -->
 				<div class="related-projects">
-					<h4 class="related-heading">Related projects</h4>
+					<h4 class="related-heading">Related recipes</h4>
 					<div class="related-list cf">
 						<figure>
 							<a href="#" class="thumb"><img src="@routes.Assets.at("img/dummies/slides/01.jpg")" alt="Alt text" /></a>

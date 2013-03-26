@@ -15,13 +15,11 @@ import models.Recipe
 
 object RecipeController extends Controller with MongoController {
 
-	val db = ReactiveMongoPlugin.db
-	lazy val collection = db("recipes")
 
 	def get(id: Int) = Action { implicit request =>
 		Async {
 			val qb = QueryBuilder().query(Json.obj("id" -> id))
-			collection.find[JsValue](qb).toList.map { recipes =>
+			Application.collection.find[JsValue](qb).toList.map { recipes =>
 				Ok(views.html.recipe(recipes.head.as[Recipe]))
 			}
 		}
@@ -29,6 +27,19 @@ object RecipeController extends Controller with MongoController {
 
 	def add() = Action { implicit request =>
 		Ok(views.html.recipe_form())
+	}
+	
+	def edit(id: Int) = Action { implicit request =>
+		Async {
+			val qb = QueryBuilder().query(Json.obj("id" -> id))
+			Application.collection.find[JsValue](qb).toList.map { recipes =>
+				Ok(views.html.recipe_form(Some(recipes.head.as[Recipe])))
+			}
+		}
+	}
+	
+	def delete(id: Int) = Action { implicit request =>
+		Ok
 	}
 
 }

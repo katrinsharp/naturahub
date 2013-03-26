@@ -136,7 +136,7 @@ jQuery(document).ready(function($) {
 	
 	$("#tweets").tweet({
         count: 3,
-        username: "ansimuz"
+        username: "katrinsh"
     });
     
     //##########################################

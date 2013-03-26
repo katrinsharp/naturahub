@@ -1,7 +1,7 @@
-@()(implicit request: RequestHeader)
+@(recipe: Option[Recipe] = None)(implicit request: RequestHeader)
 
 <!-- reply move form -->
-<script src="@routes.Assets.at("javascripts/moveform.js")"></script>
+<!--script src="@routes.Assets.at("javascripts/moveform.js")"></script-->
 
 @main("NaturaHub") {
 
@@ -14,54 +14,63 @@
 			<div id="page-content" class="cf">
 
 				<p>
-					<h3>ADD RECIPE</h3>
+					<h3>@if(recipe.nonEmpty){EDIT}else{ADD} RECIPE</h3>
 				</p>
 				<p>
-					Use this form to add a new exiting recipe.
+					Use this form to @if(recipe.nonEmpty){edit your amazing}else{add a new exiting} recipe.
 				</p>
 				<!-- form -->
-				<script type="text/javascript" src="@routes.Assets.at("javascripts/form-validation.js")"></script>
+				<script type="text/javascript" src="@routes.Assets.at("javascripts/form-validation2.js")"></script>
 				<form id="contactForm" action="#" method="post">
 					<fieldset>
 
 						<p>
 							<label for="name" >Recipe Name *</label>
-							<input name="name"  id="name" type="text" class="form-poshytip" title="Enter recipe name" />
+							<input name="name"  id="name" type="text" class="form-poshytip" title="Enter recipe name" value="@recipe.getOrElse(EmptyRecipe.default).name"/>
 						</p>
 						
 						<p>
 							<label for="shortDesc">Short description *</label>
-							<textarea  name="shortDesc"  id="shortDesc" rows="5" cols="20" class="form-poshytip" title="Enter short description. It will show up in search results."></textarea>
+							<textarea  name="shortDesc"  id="shortDesc" rows="5" cols="20" class="form-poshytip" title="Enter short description. It will show up in search results.">
+								@recipe.getOrElse(EmptyRecipe.default).about
+							</textarea>
 						</p>
 						
 						<p>
 							<label for="about">Ingredients *</label>
-							<textarea  name="ingredients"  id="ingredients" rows="5" cols="20" class="form-poshytip" title="Enter recioe ingredients"></textarea>
+							<input  name="ingredients"  id="ingredients" type="text" class="form-poshytip" title="Enter recipe ingredients"
+								value="@recipe.getOrElse(EmptyRecipe.default).ingredients.foldRight("")((b, a) => b + ", " + a).dropRight(2)"/>
 						</p>
 						
 						<p>
 							<label for="prepTime">Prep Time</label>
-							<input name="prepTime"  id="prepTime" type="text" class="form-poshytip" title="How long it takes to prepare a recipe" />
+							<input name="prepTime"  id="prepTime" type="text" class="form-poshytip" title="How long it takes to prepare a recipe" value="@recipe.getOrElse(EmptyRecipe.default).prep_time"/>
 						</p>
 						
 						<p>
 							<label for="recipeYield">Recipe Yield</label>
-							<input name="recipeYield"  id="recipeYield" type="text" class="form-poshytip" title="The resulted quantity" />
+							<input name="recipeYield"  id="recipeYield" type="text" class="form-poshytip" title="The resulted quantity" value="@recipe.getOrElse(EmptyRecipe.default).recipe_yield"/>
 						</p>
 						
 						<p>
 							<label for="content">Directions</label>
-							<textarea  name="directions"  id="directions" rows="5" cols="20" class="form-poshytip" title="Enter the recipe itself"></textarea>
+							<textarea  name="directions"  id="directions" rows="5" cols="20" class="form-poshytip" title="Enter the recipe itself">
+								@recipe.getOrElse(EmptyRecipe.default).content
+							</textarea>
 						</p>
 						
 						<p>
 							<label for="level">Difficulty level</label>
-							<textarea  name="level"  id="level" rows="5" cols="20" class="form-poshytip" title="How difficult is to prepare this recipe"></textarea>
+							<input  name="level"  id="level" type="text" class="form-poshytip" title="How difficult is to prepare this recipe"
+							value="@recipe.getOrElse(EmptyRecipe.default).level"
+							/>
 						</p>
 						
 						<p>
 							<label for="tags">Categories/Tags</label>
-							<textarea  name="tags"  id="tags" rows="5" cols="20" class="form-poshytip" title="Categorize your recipe. It will help others to find your recipe."></textarea>
+							<input  name="tags"  id="tags" type="text" class="form-poshytip" title="Categorize your recipe. It will help others to find your recipe."
+							value="@recipe.getOrElse(EmptyRecipe.default).tags.foldRight("")((b, a) => b + ", " + a).dropRight(2)"
+							/>
 						</p>
 
 						<!-- send mail configuration -->
