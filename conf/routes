@@ -7,6 +7,7 @@ GET     /                           controllers.Application.index
 GET		/recipe/add					controllers.RecipeController.add
 GET		/recipe/:id					controllers.RecipeController.get(id: Int)
 GET		/recipe/edit/:id			controllers.RecipeController.edit(id: Int)
+POST	/recipe/submitEdit			controllers.RecipeController.submitEdit
 GET		/recipe/delete/:id			controllers.RecipeController.delete(id: Int)
 
 # Map static resources from the /public folder to the /assets URL path

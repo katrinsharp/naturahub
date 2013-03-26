@@ -1,7 +1,31 @@
-@(recipe: Option[Recipe] = None)(implicit request: RequestHeader)
+@(recipeForm: Form[Recipe], recipe2: Option[Recipe] = None)(implicit request: RequestHeader)
 
 <!-- reply move form -->
 <!--script src="@routes.Assets.at("javascripts/moveform.js")"></script-->
+
+@import views.html.helper._
+
+@input(field: Field, required: Boolean, label: String, hint: String, value: String) = {
+	
+		<label for="@field.id">@label @if(required){<span class="input_required">*</span>} 
+			@if(field.hasErrors){
+				<span class="error">@Messages(field.error.head.message)</span>
+			}
+		</label>
+		<input id="@field.id" name="@field.id" title="@hint" type="text" value="@value" class="form-poshytip"/>
+}
+
+@textarea(field: Field, required: Boolean, label: String, hint: String, value: String) = {
+	
+		<label for="@field.id">@label @if(required){<span class="input_required">*</span>} 
+			@if(field.hasErrors){
+				<span class="error">@Messages(field.error.head.message)</span>
+			}
+		</label>
+		<textarea  rows="5" cols="20" class="form-poshytip" id="@field.id" name="@field.id" title="@hint">
+			@value
+		</textarea>
+}
 
 @main("NaturaHub") {
 
@@ -14,78 +38,67 @@
 			<div id="page-content" class="cf">
 
 				<p>
-					<h3>@if(recipe.nonEmpty){EDIT}else{ADD} RECIPE</h3>
+					<h3>@if(recipeForm("id").value.nonEmpty){EDIT}else{ADD} RECIPE</h3>
 				</p>
 				<p>
-					Use this form to @if(recipe.nonEmpty){edit your amazing}else{add a new exiting} recipe.
+					Use this form to @if(recipeForm("id").value.nonEmpty){edit your amazing}else{add a new exiting} recipe.
 				</p>
 				<!-- form -->
 				<script type="text/javascript" src="@routes.Assets.at("javascripts/form-validation2.js")"></script>
-				<form id="contactForm" action="#" method="post">
-					<fieldset>
+				@helper.form(action = (if(!recipeForm("id").value.nonEmpty) routes.RecipeController.add else routes.RecipeController.submitEdit), 'id -> "recipeForm") {
+					
 
 						<p>
-							<label for="name" >Recipe Name *</label>
-							<input name="name"  id="name" type="text" class="form-poshytip" title="Enter recipe name" value="@recipe.getOrElse(EmptyRecipe.default).name"/>
+							@input(recipeForm("name"), true, "Recipe Name", "Enter recipe name", recipeForm("name").value.getOrElse(""))
 						</p>
 						
 						<p>
-							<label for="shortDesc">Short description *</label>
-							<textarea  name="shortDesc"  id="shortDesc" rows="5" cols="20" class="form-poshytip" title="Enter short description. It will show up in search results.">
-								@recipe.getOrElse(EmptyRecipe.default).about
-							</textarea>
+							@textarea(recipeForm("shortDesc"), true, "Short description", "Enter short description. It will show up in search results.", recipeForm("shortDesc").value.getOrElse(""))
 						</p>
 						
 						<p>
-							<label for="about">Ingredients *</label>
-							<input  name="ingredients"  id="ingredients" type="text" class="form-poshytip" title="Enter recipe ingredients"
-								value="@recipe.getOrElse(EmptyRecipe.default).ingredients.foldRight("")((b, a) => b + ", " + a).dropRight(2)"/>
+							@input(recipeForm("ingredients"), true, "Ingredients", "Enter recipe ingredients", 
+								repeat(recipeForm("ingredients")) { ing =>
+                					Html(ing.value.getOrElse(""))
+       							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2))
 						</p>
 						
 						<p>
-							<label for="prepTime">Prep Time</label>
-							<input name="prepTime"  id="prepTime" type="text" class="form-poshytip" title="How long it takes to prepare a recipe" value="@recipe.getOrElse(EmptyRecipe.default).prep_time"/>
+							@input(recipeForm("prepTime"), true, "Prep Time", "How long does it take to prepare a recipe?", recipeForm("prepTime").value.getOrElse(""))
 						</p>
 						
 						<p>
-							<label for="recipeYield">Recipe Yield</label>
-							<input name="recipeYield"  id="recipeYield" type="text" class="form-poshytip" title="The resulted quantity" value="@recipe.getOrElse(EmptyRecipe.default).recipe_yield"/>
+							@input(recipeForm("recipeYield"), true, "Recipe Yield", "The resulted quantity", recipeForm("recipeYield").value.getOrElse(""))
 						</p>
 						
 						<p>
-							<label for="content">Directions</label>
-							<textarea  name="directions"  id="directions" rows="5" cols="20" class="form-poshytip" title="Enter the recipe itself">
-								@recipe.getOrElse(EmptyRecipe.default).content
-							</textarea>
+							@textarea(recipeForm("directions"), true, "Directions", "Enter the recipe itself.", recipeForm("directions").value.getOrElse(""))
 						</p>
 						
 						<p>
-							<label for="level">Difficulty level</label>
-							<input  name="level"  id="level" type="text" class="form-poshytip" title="How difficult is to prepare this recipe"
-							value="@recipe.getOrElse(EmptyRecipe.default).level"
-							/>
+							@input(recipeForm("level"), true, "Difficulty level", "How difficult is to prepare this recipe?", recipeForm("level").value.getOrElse(""))
 						</p>
 						
 						<p>
-							<label for="tags">Categories/Tags</label>
-							<input  name="tags"  id="tags" type="text" class="form-poshytip" title="Categorize your recipe. It will help others to find your recipe."
-							value="@recipe.getOrElse(EmptyRecipe.default).tags.foldRight("")((b, a) => b + ", " + a).dropRight(2)"
-							/>
+							@input(recipeForm("tags"), true, "Categories/Tags", "Categorize your recipe. It will help others to find your recipe.", 
+								repeat(recipeForm("tags"), min = 1) { ing =>
+                					Html(ing.value.getOrElse(""))
+       							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2))
 						</p>
 
-						<!-- send mail configuration -->
-						<input type="hidden" value="your@@email.com" name="to" id="to" />
-						<input type="hidden" value="Enter the subject here" name="subject" id="subject" />
-						<input type="hidden" value="send-mail.php" name="sendMailUrl" id="sendMailUrl" />
-						<!-- ENDS send mail configuration -->
+						<!-- hidden -->
+						<input type="hidden" value="@recipeForm("id").value.getOrElse("-1")" name="id" id="id" />
+						<input type="hidden" value="@recipeForm("created").value.getOrElse("2013")" name="created" id="created" />
+						<input type="hidden" value="@recipeForm("by").value.getOrElse("Katrin")" name="by" id="by" />
+						<!-- ENDS hidden -->
 
 						<p>
-							<input type="button" value="Submit" name="submit" id="submit" />
+							<div type="button" value="Submit" class="link-button" id="submit">Submit</div>
 							<span id="error" class="warning">Message</span>
 						</p>
-					</fieldset>
+					
 
-				</form>
+				}
 				<p id="sent-form-msg" class="success">
 					Form data sent. Thanks for your comments.
 				</p>
@@ -98,4 +111,14 @@
 	</div>
 	<!-- ENDS MAIN -->
 </body>
+<script>
+	function bindtoSubmit(e) {
+		e.preventDefault();
+		$("#recipeForm").submit();
+		return false;
+	}
+	$(function() {
+		$('#recipeForm #submit').bind('click', bindtoSubmit);
+	});
+</script>
 }
