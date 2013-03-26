@@ -5,14 +5,14 @@
 
 @import views.html.helper._
 
-@input(field: Field, required: Boolean, label: String, hint: String, value: String) = {
+@input(field: Field, required: Boolean, label: String, hint: String, value: String, nId: String = "") = {
 	
 		<label for="@field.id">@label @if(required){<span class="input_required">*</span>} 
 			@if(field.hasErrors){
 				<span class="error">@Messages(field.error.head.message)</span>
 			}
 		</label>
-		<input id="@field.id" name="@field.id" title="@hint" type="text" value="@value" class="form-poshytip"/>
+		<input id="@{field.id+nId}" name="@{field.id+nId}" title="@hint" type="text" value="@value" class="form-poshytip"/>
 }
 
 @textarea(field: Field, required: Boolean, label: String, hint: String, value: String) = {
@@ -60,7 +60,8 @@
 							@input(recipeForm("ingredients"), true, "Ingredients", "Enter recipe ingredients", 
 								repeat(recipeForm("ingredients")) { ing =>
                 					Html(ing.value.getOrElse(""))
-       							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2))
+       							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2),
+       							"[0]")
 						</p>
 						
 						<p>
@@ -83,7 +84,8 @@
 							@input(recipeForm("tags"), true, "Categories/Tags", "Categorize your recipe. It will help others to find your recipe.", 
 								repeat(recipeForm("tags"), min = 1) { ing =>
                 					Html(ing.value.getOrElse(""))
-       							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2))
+       							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2),
+       							"[0]")
 						</p>
 
 						<!-- hidden -->

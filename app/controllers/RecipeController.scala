@@ -47,8 +47,7 @@ object RecipeController extends Controller with MongoController {
 		recipeForm.bindFromRequest.fold(
 			formWithErrors => {println(formWithErrors);BadRequest(views.html.recipe_form(formWithErrors))},
 			value => {
-				println(value.tags)
-				/*AsyncResult {
+				AsyncResult {
 					val selector = QueryBuilder().query(Json.obj("id" -> value.id)).makeQueryDocument
 					val modifier = QueryBuilder().query(Json.obj(
 							/*"id" -> value.id,*/ 
@@ -60,14 +59,14 @@ object RecipeController extends Controller with MongoController {
 							"prepTime" -> value.prepTime,
 							"recipeYield" -> value.recipeYield,
 							"level" -> value.level,
-							"ingredients" -> value.ingredients(0).split(", "),
-							"tags" -> value.tags(0).split(", "))).makeQueryDocument
+							"ingredients" -> value.ingredients(0).split(",").map(_.trim()),
+							"tags" -> value.tags(0).split(",").map(_.trim()))).makeQueryDocument
 					
 					Application.collection.update(selector, modifier).map {
 						e => println(e.toString);Ok	
 	        		}
-				}*/
-				Ok 
+				}
+				//Ok 
 			}
 		)
 	}
