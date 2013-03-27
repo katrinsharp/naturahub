@@ -5,24 +5,24 @@
 
 @import views.html.helper._
 
-@input(field: Field, required: Boolean, label: String, hint: String, value: String, nId: String = "") = {
+@input(fieldName: String, required: Boolean, label: String, hint: String, value: String, nId: String = "") = {
 	
-		<label for="@field.id">@label @if(required){<span class="input_required">*</span>} 
-			@if(field.hasErrors){
-				<span class="error">@Messages(field.error.head.message)</span>
+		<label for="@recipeForm(fieldName).id">@label @if(required){<span class="input_required">*</span>} 
+			@if(recipeForm(fieldName+nId).hasErrors){
+				<span class="error">@Messages(recipeForm(fieldName+nId).error.head.message)</span>
 			}
 		</label>
-		<input id="@{field.id+nId}" name="@{field.id+nId}" title="@hint" type="text" value="@value" class="form-poshytip"/>
+		<input id="@{recipeForm(fieldName).id+nId}" name="@{recipeForm(fieldName).id+nId}" title="@hint" type="text" value="@value" class="form-poshytip"/>
 }
 
-@textarea(field: Field, required: Boolean, label: String, hint: String, value: String) = {
+@textarea(fieldName: String, required: Boolean, label: String, hint: String, value: String) = {
 	
-		<label for="@field.id">@label @if(required){<span class="input_required">*</span>} 
-			@if(field.hasErrors){
-				<span class="error">@Messages(field.error.head.message)</span>
+		<label for="@recipeForm(fieldName).id">@label @if(required){<span class="input_required">*</span>} 
+			@if(recipeForm(fieldName).hasErrors){
+				<span class="error">@Messages(recipeForm(fieldName).error.head.message)</span>
 			}
 		</label>
-		<textarea  rows="5" cols="20" class="form-poshytip" id="@field.id" name="@field.id" title="@hint">
+		<textarea  rows="5" cols="20" class="form-poshytip" id="@{recipeForm(fieldName).id}" name="@{recipeForm(fieldName).id}" title="@hint">
 			@value
 		</textarea>
 }
@@ -44,20 +44,19 @@
 					Use this form to @if(recipeForm("id").value.nonEmpty){edit your amazing}else{add a new exiting} recipe.
 				</p>
 				<!-- form -->
-				<script type="text/javascript" src="@routes.Assets.at("javascripts/form-validation2.js")"></script>
-				@helper.form(action = (if(!recipeForm("id").value.nonEmpty) routes.RecipeController.add else routes.RecipeController.submitEdit), 'id -> "recipeForm") {
+				@helper.form(action = routes.RecipeController.submitRecipe, 'id -> "recipeForm") {
 					
 
 						<p>
-							@input(recipeForm("name"), true, "Recipe Name", "Enter recipe name", recipeForm("name").value.getOrElse(""))
+							@input("name", true, "Recipe Name", "Enter recipe name", recipeForm("name").value.getOrElse(""))
 						</p>
 						
 						<p>
-							@textarea(recipeForm("shortDesc"), true, "Short description", "Enter short description. It will show up in search results.", recipeForm("shortDesc").value.getOrElse(""))
+							@textarea("shortDesc", true, "Short description", "Enter short description. It will show up in search results.", recipeForm("shortDesc").value.getOrElse(""))
 						</p>
 						
 						<p>
-							@input(recipeForm("ingredients"), true, "Ingredients", "Enter recipe ingredients", 
+							@input("ingredients", true, "Ingredients", "coconut oil, shea butter, tea tree etc.", 
 								repeat(recipeForm("ingredients")) { ing =>
                 					Html(ing.value.getOrElse(""))
        							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2),
@@ -65,23 +64,23 @@
 						</p>
 						
 						<p>
-							@input(recipeForm("prepTime"), true, "Prep Time", "How long does it take to prepare a recipe?", recipeForm("prepTime").value.getOrElse(""))
+							@input("prepTime", true, "Prep Time", "How long does it take to prepare a recipe?", recipeForm("prepTime").value.getOrElse(""))
 						</p>
 						
 						<p>
-							@input(recipeForm("recipeYield"), true, "Recipe Yield", "The resulted quantity", recipeForm("recipeYield").value.getOrElse(""))
+							@input("recipeYield", true, "Recipe Yield", "The resulted quantity", recipeForm("recipeYield").value.getOrElse(""))
 						</p>
 						
 						<p>
-							@textarea(recipeForm("directions"), true, "Directions", "Enter the recipe itself.", recipeForm("directions").value.getOrElse(""))
+							@textarea("directions", true, "Directions", "Enter the recipe itself.", recipeForm("directions").value.getOrElse(""))
 						</p>
 						
 						<p>
-							@input(recipeForm("level"), true, "Difficulty level", "How difficult is to prepare this recipe?", recipeForm("level").value.getOrElse(""))
+							@input("level", true, "Difficulty level", "How difficult is to prepare this recipe?", recipeForm("level").value.getOrElse(""))
 						</p>
 						
 						<p>
-							@input(recipeForm("tags"), true, "Categories/Tags", "Categorize your recipe. It will help others to find your recipe.", 
+							@input("tags", true, "Tags", "Anti-aging, sunscreen etc.", 
 								repeat(recipeForm("tags"), min = 1) { ing =>
                 					Html(ing.value.getOrElse(""))
        							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2),
@@ -90,7 +89,7 @@
 
 						<!-- hidden -->
 						<input type="hidden" value="@recipeForm("id").value.getOrElse("-1")" name="id" id="id" />
-						<input type="hidden" value="@recipeForm("created").value.getOrElse("2013")" name="created" id="created" />
+						<input type="hidden" value="@recipeForm("created").value.getOrElse(org.joda.time.format.ISODateTimeFormat.date().print(org.joda.time.DateTime.now()))" name="created" id="created" />
 						<input type="hidden" value="@recipeForm("by").value.getOrElse("Katrin")" name="by" id="by" />
 						<!-- ENDS hidden -->
 

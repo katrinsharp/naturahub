@@ -48,13 +48,13 @@
 							<strong>By </strong> @recipe.by
 						</p>
 						<p>
-							<strong>Date </strong> @recipe.created
+							<strong>Date </strong> @org.joda.time.format.ISODateTimeFormat.date().print(recipe.created)
 						</p>
 						<p>
-							<a href="@routes.RecipeController.edit(recipe.id)" class="launch" >Edit Recipe</a>
+							<a href="@routes.RecipeController.edit(recipe._id)" class="launch" >Edit Recipe</a>
 						</p>
 						<p>
-							<a href="@routes.RecipeController.delete(recipe.id)" class="launch" >Delete Recipe</a>
+							<a href="@routes.RecipeController.delete(recipe._id)" class="launch" >Delete Recipe</a>
 						</p>
 					</div>
 
@@ -65,7 +65,7 @@
 
 						<div class="multicolumn">
 							<p>
-								@recipe.content
+								@recipe.directions
 							</p>
 
 						</div>

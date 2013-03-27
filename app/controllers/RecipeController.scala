@@ -16,6 +16,7 @@ import play.api.data.validation.Constraints._
 import play.api.data.format.Formats._
 import views.html.defaultpages.badRequest
 import play.api.data.FormError
+import views.html.defaultpages.error
 
 //https://github.com/sgodbillon/reactivemongo-demo-app/blob/master/app/controllers/Application.scala
 
@@ -23,12 +24,12 @@ object RecipeController extends Controller with MongoController {
 
 	val recipeForm: Form[Recipe] = Form(
 		mapping(
-			"id" -> number,
+			"id" -> nonEmptyText,
 			"name" -> nonEmptyText,
-			"shortDesc" -> nonEmptyText,
-			"created" -> nonEmptyText,
-			"by" -> text,
-			"directions" -> nonEmptyText,
+			"shortDesc" -> nonEmptyText.verifying("This field is required", (_.trim().length() > 3)),
+			"created" -> jodaDate("yyyy-MM-dd"),
+			"by" -> nonEmptyText,
+			"directions" -> nonEmptyText.verifying("This field is required", (_.trim().length() > 3)),
 			"ingredients" -> list(nonEmptyText),
 			"prepTime" -> nonEmptyText,
 			"recipeYield" -> nonEmptyText,
@@ -43,38 +44,45 @@ object RecipeController extends Controller with MongoController {
 		
 		//(Recipe.apply)(Recipe.unapply))
 		
-	def submitEdit = Action {  implicit request =>
+	def submitRecipe = Action {  implicit request =>
 		recipeForm.bindFromRequest.fold(
 			formWithErrors => {println(formWithErrors);BadRequest(views.html.recipe_form(formWithErrors))},
 			value => {
+				val id = value._id match {
+							case "-1" => BSONObjectID.generate.stringify
+							case v => v
+						}
 				AsyncResult {
-					val selector = QueryBuilder().query(Json.obj("id" -> value.id)).makeQueryDocument
+					val selector = QueryBuilder().query(Json.obj("_id" -> value._id)).makeQueryDocument
 					val modifier = QueryBuilder().query(Json.obj(
-							/*"id" -> value.id,*/ 
+							"_id" -> id,
 							"name" -> value.name,
-							"about" -> value.about,
-							/*"created" -> value.id,
-							"by" -> value.by,*/
-							"content" -> value.content,
+							"shortDesc" -> value.shortDesc,
+							"created" -> value.created,
+							"by" -> value.by,
+							"directions" -> value.directions,
 							"prepTime" -> value.prepTime,
 							"recipeYield" -> value.recipeYield,
 							"level" -> value.level,
 							"ingredients" -> value.ingredients(0).split(",").map(_.trim()),
 							"tags" -> value.tags(0).split(",").map(_.trim()))).makeQueryDocument
-					
-					Application.collection.update(selector, modifier).map {
-						e => println(e.toString);Ok	
-	        		}
-				}
-				//Ok 
+					id match {
+						case value._id => Application.collection.update(selector, modifier).map {
+											e => println(e.toString);Redirect(routes.RecipeController.get(id))
+										}
+						case _ => Application.collection.insert(modifier).map {
+											e => println(e.toString);Redirect(routes.RecipeController.get(id))
+										}
+					}
+				} 
 			}
 		)
 	}
 		
 
-	def get(id: Int) = Action { implicit request =>
+	def get(id: String) = Action { implicit request =>
 		Async {
-			val qb = QueryBuilder().query(Json.obj("id" -> id))
+			val qb = QueryBuilder().query(Json.obj("_id" -> id))
 			Application.collection.find[JsValue](qb).toList.map { recipes =>
 				Ok(views.html.recipe(recipes.head.as[Recipe]))
 			}
@@ -85,16 +93,16 @@ object RecipeController extends Controller with MongoController {
 		Ok(views.html.recipe_form(recipeForm))
 	}
 	
-	def edit(id: Int) = Action { implicit request =>
+	def edit(id: String) = Action { implicit request =>
 		Async {
-			val qb = QueryBuilder().query(Json.obj("id" -> id))
+			val qb = QueryBuilder().query(Json.obj("_id" -> id))
 			Application.collection.find[JsValue](qb).toList.map { recipes =>
 				Ok(views.html.recipe_form(recipeForm.fill(recipes.head.as[Recipe])))
 			}
 		}
 	}
 	
-	def delete(id: Int) = Action { implicit request =>
+	def delete(id: String) = Action { implicit request =>
 		Ok
 	}
 
