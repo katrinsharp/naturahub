@@ -13,7 +13,9 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here,
     //jdbc,
     //anorm
-  	"org.reactivemongo" %% "play2-reactivemongo" % "0.8"
+  	"org.reactivemongo" %% "play2-reactivemongo" % "0.8",
+  	"com.amazonaws" % "aws-java-sdk" % "1.3.11",
+    "org.imgscalr" % "imgscalr-lib" % "4.2"
   )
 
 

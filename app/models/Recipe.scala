@@ -16,9 +16,10 @@ case class Recipe(
 		prepTime: String,
 		recipeYield: String,
 		level: String, 
-		tags: List[String])
+		tags: List[String],
+		photos: List[S3Photo])
 
-object Recipe extends Function11[String, String, String, DateTime, String, String, List[String], String, String, String, List[String], Recipe] {
+object Recipe extends Function12[String, String, String, DateTime, String, String, List[String], String, String, String, List[String], List[S3Photo], Recipe] {
 	implicit val recipeWrites = Json.writes[Recipe]
 	implicit val recipeReads = Json.reads[Recipe]
 }

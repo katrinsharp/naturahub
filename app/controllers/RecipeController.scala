@@ -17,6 +17,9 @@ import play.api.data.format.Formats._
 import views.html.defaultpages.badRequest
 import play.api.data.FormError
 import views.html.defaultpages.error
+import models.S3Photo
+import utils.S3Blob
+import java.io.File
 
 //https://github.com/sgodbillon/reactivemongo-demo-app/blob/master/app/controllers/Application.scala
 
@@ -34,15 +37,9 @@ object RecipeController extends Controller with MongoController {
 			"prepTime" -> nonEmptyText,
 			"recipeYield" -> nonEmptyText,
 			"level" -> text.verifying("beginner, intermediate or advanced", {_.matches("""^beginner|intermediate|advanced""")}),
-			"tags" -> list(nonEmptyText)
+			"tags" -> list(nonEmptyText),
+			"photos" -> ignored(List[S3Photo]())
 		)(Recipe.apply)(Recipe.unapply))
-		
-		//( 
-		//	(id, name, about, created, by, directions, ingredients, prep_time, recipe_yield, level, tags) => Recipe(id, name, about, created, by, directions, List(ingredients), prep_time, recipe_yield, level, List(tags)),
-		//	(r: Recipe) => Some(r.id, r.name, r.about, r.created, r.by, r.content, r.ingredients, r.prep_time, r.recipe_yield, r.level, r.tags)
-		//))
-		
-		//(Recipe.apply)(Recipe.unapply))
 		
 	def submitRecipe = Action {  implicit request =>
 		recipeForm.bindFromRequest.fold(
@@ -53,19 +50,31 @@ object RecipeController extends Controller with MongoController {
 							case v => v
 						}
 				AsyncResult {
+					
+					var photos = List[S3Photo]()
+					val files = request.body.asMultipartFormData.toList
+					files.foreach( next =>
+						next.files.map { file =>
+							photos = photos :+ S3Photo(S3Blob.s3Bucket, file.ref.file.getPath())
+							println(file.ref.file.getPath()) 
+							file.ref.moveTo(new File("c:\\tmp\\"+file.ref.file.getName()+".jpg"))
+						}
+					)	
+					
 					val selector = QueryBuilder().query(Json.obj("_id" -> value._id)).makeQueryDocument
 					val modifier = QueryBuilder().query(Json.obj(
 							"_id" -> id,
 							"name" -> value.name,
-							"shortDesc" -> value.shortDesc,
+							"shortDesc" -> value.shortDesc.trim(),
 							"created" -> value.created,
 							"by" -> value.by,
-							"directions" -> value.directions,
+							"directions" -> value.directions.trim(),
 							"prepTime" -> value.prepTime,
 							"recipeYield" -> value.recipeYield,
 							"level" -> value.level,
 							"ingredients" -> value.ingredients(0).split(",").map(_.trim()),
-							"tags" -> value.tags(0).split(",").map(_.trim()))).makeQueryDocument
+							"tags" -> value.tags(0).split(",").map(_.trim()),
+							"photos" -> photos)).makeQueryDocument
 					id match {
 						case value._id => Application.collection.update(selector, modifier).map {
 											e => println(e.toString);Redirect(routes.RecipeController.get(id))
