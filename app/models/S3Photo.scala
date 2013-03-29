@@ -17,7 +17,7 @@ import java.util.UUID
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-class S3Photo(var bucket: String, var key: String) {
+class S3Photo(var bucket: String, var key: String, var metadata: String) {
     
     def getUrl(path: String): String = {
         "https://s3.amazonaws.com/" + S3Blob.s3Bucket + "/" + path;
@@ -58,9 +58,9 @@ class S3Photo(var bucket: String, var key: String) {
     }   
 }
 
-object S3Photo extends Function2[String, String, S3Photo] {	
+object S3Photo extends Function3[String, String, String, S3Photo] {	
 	implicit val recipeWrites = Json.writes[S3Photo]
 	implicit val recipeReads = Json.reads[S3Photo]
-	def unapply(photo: S3Photo) = new Some(photo.bucket, photo.key)
-	def apply(bucket: String, key: String) = new S3Photo(bucket, key)
+	def unapply(photo: S3Photo) = new Some(photo.bucket, photo.key, photo.metadata)
+	def apply(bucket: String, key: String, metadata: String) = new S3Photo(bucket, key, metadata)
 }

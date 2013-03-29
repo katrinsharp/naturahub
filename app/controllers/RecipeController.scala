@@ -23,6 +23,8 @@ import java.io.File
 import javax.imageio.ImageIO
 import org.imgscalr.Scalr
 import utils.Image
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 //https://github.com/sgodbillon/reactivemongo-demo-app/blob/master/app/controllers/Application.scala
 
@@ -55,11 +57,17 @@ object RecipeController extends Controller with MongoController {
 				AsyncResult {
 					
 					var photos = List[S3Photo]()
+					var isPreviewSet = false
 					val files = request.body.asMultipartFormData.toList
 					files.foreach( next =>
 						next.files.map { file =>
 							if(file.ref.file.length() != 0) {
-								photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsSlider(file.ref.file))
+								photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsIs(file.ref.file), "original")
+								photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsSlider(file.ref.file), "slider")
+								if(!isPreviewSet) {
+									photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsPreview(file.ref.file), "preview")
+									isPreviewSet = true
+								} 
 							}
 						}
 					)	
@@ -95,8 +103,13 @@ object RecipeController extends Controller with MongoController {
 	def get(id: String) = Action { implicit request =>
 		Async {
 			val qb = QueryBuilder().query(Json.obj("_id" -> id))
-			Application.collection.find[JsValue](qb).toList.map { recipes =>
-				Ok(views.html.recipe(recipes.head.as[Recipe]))
+			val futureRecipe = Application.collection.find[JsValue](qb).toList.map(_.head.as[Recipe])				
+			val duration100 = Duration(1000, "millis")
+			val recipe = Await.result(futureRecipe, duration100).asInstanceOf[Recipe]
+				
+			val qbAll = QueryBuilder().query(Json.obj())
+			Application.collection.find[JsValue](qbAll, QueryOpts(batchSizeN=4)).toList.map  { relatedRecipes =>
+				Ok(views.html.recipe(recipe, relatedRecipes.map(r => r.as[Recipe])))
 			}
 		}
 	}

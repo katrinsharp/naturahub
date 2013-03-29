@@ -10,9 +10,31 @@ import org.joda.time.DateTime
 object Image {
 	
 	val RECIPE_SLIDER_SIZE = (940, 367)
+	val RECIPE_PREVIEW_WIDTH = 300
 	
 	def saveAsSlider(inputFile: File): String = {
 		resizeAndSave(inputFile, RECIPE_SLIDER_SIZE._1, RECIPE_SLIDER_SIZE._2)
+	}
+	
+	def saveAsPreview(inputFile: File): String = {
+		val originalImage = ImageIO.read(inputFile)
+		val scaledImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, RECIPE_PREVIEW_WIDTH)
+		save(scaledImage)
+	}
+	
+	def saveAsIs(inputFile: File): String = {
+		val originalImage = ImageIO.read(inputFile)
+		save(originalImage)
+	}
+	
+	def save(image: BufferedImage): String = {
+		val name = DateTime.now().getMillis() + ".jpg"
+		ImageIO.write(
+			image,
+			"jpg",
+			new File("C:\\base\\source\\naturahub\\public\\img\\tmp\\" + name))
+		Logger.debug("************* "+name)
+		name	
 	}
 	
 	def resizeAndSave(inputFile: File, width: Int, height: Int): String = {
@@ -30,9 +52,9 @@ object Image {
 		/*
 		 * Same, same
 		 */
-		if(origX == width && origY == height) {
-			scaledImage = originalImage
-			Logger.debug("exactly same size")
+		if(origX/origY == width/height) {
+			scaledImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, width, height)
+			Logger.debug("same ratio")
 		}
 		/*
 		 * Picture bigger than the window
@@ -70,13 +92,7 @@ object Image {
 		
 		Logger.debug(s"cropW: $cropW, cropH; $cropH")
 
-		val name = DateTime.now().getMillis() + ".jpg"
-		ImageIO.write(
-			scaledImage,
-			"jpg",
-			new File("C:\\base\\source\\naturahub\\public\\img\\tmp\\" + name))
-		Logger.debug("************* "+name)
-		name	
+		save(scaledImage)	
 	}
 
 }

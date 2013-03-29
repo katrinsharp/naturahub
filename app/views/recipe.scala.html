@@ -1,4 +1,4 @@
-@(recipe: Recipe)(implicit request: RequestHeader)
+@(recipe: Recipe, relatedRecipes: Seq[Recipe])(implicit request: RequestHeader)
 
 <!-- jplayer -->
 <link href="@routes.Assets.at("player-skin/jplayer-black-and-yellow.css")" rel="stylesheet" type="text/css" />
@@ -30,9 +30,11 @@
 						<div class="flexslider">
 							<ul class="slides">
 								@for(photo <- recipe.photos){
-									<li>
-										<img src="@routes.Assets.at("img/tmp/"+photo.key)" alt="alt text" />
-									</li>	
+									@if(photo.metadata.contains("slider")) {
+										<li>
+											<img src="@routes.Assets.at("img/tmp/"+photo.key)" alt="alt text" />
+										</li>	
+									}
 								}
 							</ul>
 						</div>
@@ -75,26 +77,12 @@
 				<div class="related-projects">
 					<h4 class="related-heading">Related recipes</h4>
 					<div class="related-list cf">
-						<figure>
-							<a href="#" class="thumb"><img src="@routes.Assets.at("img/dummies/slides/01.jpg")" alt="Alt text" /></a>
-							<a href="single.html" class="heading">Pellentesque habitant morbi</a>
-						</figure>
-
-						<figure>
-							<a href="#" class="thumb"><img src="@routes.Assets.at("img/dummies/slides/02.jpg")" alt="Alt text" /></a>
-							<a href="single.html" class="heading">Pellentesque habitant morbi</a>
-						</figure>
-
-						<figure>
-							<a href="#" class="thumb"><img src="@routes.Assets.at("img/dummies/slides/03.jpg")" alt="Alt text" /></a>
-							<a href="single.html" class="heading">Pellentesque habitant morbi</a>
-						</figure>
-
-						<figure>
-							<a href="#" class="thumb"><img src="@routes.Assets.at("img/dummies/slides/04.jpg")" alt="Alt text" /></a>
-							<a href="single.html" class="heading">Pellentesque habitant morbi</a>
-						</figure>
-
+						@for(relatedRecipe <- relatedRecipes) {
+							<figure>
+								<a href="@routes.RecipeController.get(relatedRecipe._id)" class="thumb"><img src="@routes.Assets.at("img/tmp/"+relatedRecipe.photos.find(_.metadata.contains("slider")).get.key)")" alt="Alt text" /></a>
+								<a href="@routes.RecipeController.get(relatedRecipe._id)" class="heading">@relatedRecipe.name</a>
+							</figure>
+						}
 					</div>
 				</div>
 				<!-- ENDS related -->

@@ -23,7 +23,7 @@ class MiscSpec extends Specification {
 			val width = 940
 			val height = 367
 			val ratio = 940*1.0/367
-			val originalImage = ImageIO.read(new File("C:\\base\\source\\naturahub\\public\\img\\tmp\\kuku.JPG"))
+			val originalImage = ImageIO.read(new File("C:\\base\\source\\naturahub\\public\\img\\tmp\\1364530881812.JPG"))
 			val origX = originalImage.getWidth()
 			val origY = originalImage.getHeight()
 			val ovx = origX - width
@@ -36,8 +36,8 @@ class MiscSpec extends Specification {
 			/*
 			 * Same, same
 			 */
-			if(origX == width && origY == height) {
-				scaledImage = originalImage
+			if(origX/origY == width/height) {
+				scaledImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, width, height)
 				println("exactly same size")
 			}
 			/*
