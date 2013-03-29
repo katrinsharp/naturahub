@@ -29,15 +29,11 @@
 					<div class="project-slider">
 						<div class="flexslider">
 							<ul class="slides">
-								<li>
-									<img src="@routes.Assets.at("img/dummies/slides/01.jpg")" alt="alt text" />
-								</li>
-								<li>
-									<img src="@routes.Assets.at("img/dummies/slides/02.jpg")" alt="alt text" />
-								</li>
-								<li>
-									<img src="@routes.Assets.at("img/dummies/slides/03.jpg")" alt="alt text" />
-								</li>
+								@for(photo <- recipe.photos){
+									<li>
+										<img src="@routes.Assets.at("img/tmp/"+photo.key)" alt="alt text" />
+									</li>	
+								}
 							</ul>
 						</div>
 					</div>

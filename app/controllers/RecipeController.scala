@@ -20,6 +20,9 @@ import views.html.defaultpages.error
 import models.S3Photo
 import utils.S3Blob
 import java.io.File
+import javax.imageio.ImageIO
+import org.imgscalr.Scalr
+import utils.Image
 
 //https://github.com/sgodbillon/reactivemongo-demo-app/blob/master/app/controllers/Application.scala
 
@@ -27,18 +30,18 @@ object RecipeController extends Controller with MongoController {
 
 	val recipeForm: Form[Recipe] = Form(
 		mapping(
-			"id" -> nonEmptyText,
-			"name" -> nonEmptyText,
-			"shortDesc" -> nonEmptyText.verifying("This field is required", (_.trim().length() > 3)),
-			"created" -> jodaDate("yyyy-MM-dd"),
-			"by" -> nonEmptyText,
-			"directions" -> nonEmptyText.verifying("This field is required", (_.trim().length() > 3)),
-			"ingredients" -> list(nonEmptyText),
-			"prepTime" -> nonEmptyText,
-			"recipeYield" -> nonEmptyText,
-			"level" -> text.verifying("beginner, intermediate or advanced", {_.matches("""^beginner|intermediate|advanced""")}),
-			"tags" -> list(nonEmptyText),
-			"photos" -> ignored(List[S3Photo]())
+			("id") -> nonEmptyText,			
+			("name") -> nonEmptyText,			
+			("shortDesc") -> nonEmptyText.verifying("This field is required", (_.trim().length() > 3)),			
+			("created") -> jodaDate("yyyy-MM-dd"),			
+			("by") -> nonEmptyText,			
+			("directions") -> nonEmptyText.verifying("This field is required", (_.trim().length() > 3)),			
+			("ingredients") -> list(nonEmptyText),			
+			("prepTime") -> nonEmptyText,			
+			("recipeYield") -> nonEmptyText,			
+			("level") -> text.verifying("beginner, intermediate or advanced", {_.matches("""^beginner|intermediate|advanced""")}),			
+			("tags") -> list(nonEmptyText),			
+			("photos") -> ignored(List[S3Photo]())
 		)(Recipe.apply)(Recipe.unapply))
 		
 	def submitRecipe = Action {  implicit request =>
@@ -55,9 +58,9 @@ object RecipeController extends Controller with MongoController {
 					val files = request.body.asMultipartFormData.toList
 					files.foreach( next =>
 						next.files.map { file =>
-							photos = photos :+ S3Photo(S3Blob.s3Bucket, file.ref.file.getPath())
-							println(file.ref.file.getPath()) 
-							file.ref.moveTo(new File("c:\\tmp\\"+file.ref.file.getName()+".jpg"))
+							if(file.ref.file.length() != 0) {
+								photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsSlider(file.ref.file))
+							}
 						}
 					)	
 					
