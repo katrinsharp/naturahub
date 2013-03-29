@@ -1,4 +1,4 @@
-@(recipeForm: Form[Recipe], recipe2: Option[Recipe] = None)(implicit request: RequestHeader)
+@(recipeForm: Form[Recipe], photos: Seq[String] = Seq())(implicit request: RequestHeader)
 
 <!-- reply move form -->
 <!--script src="@routes.Assets.at("javascripts/moveform.js")"></script-->
@@ -25,6 +25,31 @@
 		<textarea  rows="5" cols="20" class="form-poshytip" id="@{recipeForm(fieldName).id}" name="@{recipeForm(fieldName).id}" title="@hint">
 			@value
 		</textarea>
+}
+
+@selected(val1: String, val2: String) = {
+	@if(val1==val2) {
+		selected="selected"
+	} else {
+		""
+	}
+}
+
+@atOrEmpty(i: Int, photos: Seq[String]) = {
+	
+	@if(photos.length > i) {
+		@routes.Assets.at("img/tmp/"+photos(i))
+	} else {
+		http://www.placehold.it/200x80/EFEFEF/AAAAAA&text=no+image
+	}	
+}
+
+@newVsExists(i: Int, photos: Seq[String], f: Boolean) = {
+	@if(((photos.length > i) && f) || ((photos.length <= i) && !f)) {
+		fileupload-exists		
+	} else {
+		fileupload-new
+	}
 }
 
 @main("NaturaHub") {
@@ -76,7 +101,14 @@
 						</p>
 						
 						<p>
-							@input("level", true, "Difficulty level", "How difficult is to prepare this recipe?", recipeForm("level").value.getOrElse(""))
+							<label for="level">Difficulty level <span class="input_required">*</span></label>
+							<select name="level" class="selectpicker">
+							    <option @selected("beginner", recipeForm("level").value.getOrElse("")) value="beginner" data-subtext="No special ingredients or equipment is needed">Beginner</option>
+							    <option data-divider="true"></option>
+							    <option @selected("intermediate", recipeForm("level").value.getOrElse("")) value="intermediate" data-subtext="More complex tools and ingredients might be involved">Intermediate</option>
+							    <option data-divider="true"></option>
+							    <option @selected("advanced", recipeForm("level").value.getOrElse("")) value="advanced" data-subtext="Advanced tools, ingredients or knowledge is needed">Advanced</option>
+							</select>
 						</p>
 						
 						<p>
@@ -90,16 +122,43 @@
 						<!-- file upload -->
 						<p>
 						@for(i <- 0 to 2) {
-							<div class="fileupload fileupload-new" data-provides="fileupload">
-							  <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;"><img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" /></div>
-							  <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
-							  <div>
-							    <span class="btn btn-file"><span class="fileupload-new link-button green">Select image</span><span class="fileupload-exists link-button green">Change</span>
-							    	<input type="file" name="photo" multiple />
-							    </span>
-							    <a href="#" class="btn fileupload-exists link-button red" data-dismiss="fileupload">Remove</a>
-							  </div>
-							</div>
+							
+							@if(i < photos.length) {
+								<div class="fileupload fileupload-exists" data-provides="fileupload">
+									
+									<div class="fileupload-new thumbnail" style="width: 200px; height: 80px;">
+										<img src="http://www.placehold.it/200x80/EFEFEF/AAAAAA&text=no+image" />
+									</div>	
+									<div class="fileupload-preview fileupload-exists thumbnail" style="width: 200px; height: 80px;">
+										<img src="@routes.Assets.at("img/tmp/"+photos(i))" />
+									</div>	
+									<div>
+										<span class="btn btn-file">
+											<span class="fileupload-new">Select image</span>
+											<span class="fileupload-exists">Change</span>
+											<input type="file" />
+										</span>
+										<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+									</div>
+								</div>	
+							} else {
+								<div class="fileupload fileupload-new" data-provides="fileupload">	
+									<div class="fileupload-new thumbnail" style="width: 200px; height: 80px;">
+										<img src="http://www.placehold.it/200x80/EFEFEF/AAAAAA&text=no+image" />
+									</div>	
+									<div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;">
+									</div>	
+									<div>
+										<span class="btn btn-file">
+											<span class="fileupload-new">Select image</span>
+											<span class="fileupload-exists">Change</span>
+											<input type="file" />
+										</span>
+										<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+									</div>
+								</div>
+							}
+							
 						}
 						</p>
 						<!-- end of file upload -->
@@ -139,6 +198,7 @@
 	}
 	$(function() {
 		$('#recipeForm #submit').bind('click', bindtoSubmit);
+		$('.selectpicker').selectpicker();
 	});
 </script>
 }
