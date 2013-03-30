@@ -75,11 +75,22 @@
 						</p>
 						
 						<p>
-							@input("recipe.ingredients", true, "Ingredients", "coconut oil, shea butter, tea tree etc.", 
-								repeat(recipeForm("recipe.ingredients")) { ing =>
-                					Html(ing.value.getOrElse(""))
-       							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2),
-       							"[0]")
+       						
+       						<label for="ingredients">Phases <span class="input_required">*</span></label>
+       						<hr />
+       						@for(i <- 0 to 2) {
+       							<label for="phase">Phase @{i+1}</label>
+       							@input("recipe.phases["+i+"].description", true, "Description", "Water phase, Oil phase etc", recipeForm("recipe.phases["+i+"].description").value.getOrElse(""))
+       							@input("recipe.phases["+i+"].ingredients", true, "Ingredients", "4 drops coconut oil, 20 gr shea butter, 3 drops tea tree etc.", 
+									repeat(recipeForm("recipe.phases["+i+"].ingredients")) { ing =>
+	                				Html(ing.value.getOrElse(""))
+	       						}.foldLeft("")((b,a)=>a+", "+b).dropRight(2),
+	       						"[0]")
+	       						@if(i != 2) {
+	       							<hr />
+	       						}
+       						}
+       							
 						</p>
 						
 						<p>

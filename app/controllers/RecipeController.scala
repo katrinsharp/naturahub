@@ -28,6 +28,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Future
 import play.api.data.FormError
 import models.S3PhotoMetadata
+import models.RecipePhase
 import org.joda.time.DateTime
 
 //https://github.com/sgodbillon/reactivemongo-demo-app/blob/master/app/controllers/Application.scala
@@ -46,7 +47,10 @@ object RecipeController extends Controller with MongoController {
 			"created" -> jodaDate("yyyy-MM-dd"),			
 			"by" -> nonEmptyText,			
 			"directions" -> nonEmptyText.verifying("This field is required", (_.trim().length() > 3)),			
-			"ingredients" -> list(nonEmptyText),			
+			"phases" -> list(mapping(
+					"description" -> text,
+					"ingredients" -> seq(nonEmptyText)
+					)(RecipePhase.apply)(RecipePhase.unapply)),			
 			"prepTime" -> nonEmptyText,			
 			"recipeYield" -> nonEmptyText,			
 			"level" -> text.verifying("beginner, intermediate or advanced", {_.matches("""^beginner|intermediate|advanced""")}),			
@@ -131,7 +135,7 @@ object RecipeController extends Controller with MongoController {
 								"prepTime" -> value.recipe.prepTime,
 								"recipeYield" -> value.recipe.recipeYield,
 								"level" -> value.recipe.level,
-								"ingredients" -> value.recipe.ingredients(0).split(",").map(_.trim()),
+								"phases" -> value.recipe.phases.map(ph => RecipePhase(ph.description, ph.ingredients(0).split(",").map(_.trim()))),
 								"tags" -> value.recipe.tags(0).split(",").map(_.trim()),
 								"photos" -> photos)).makeQueryDocument
 							newRecipe match {
