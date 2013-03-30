@@ -1,4 +1,4 @@
-@(title: String)(content: Html)(implicit request: RequestHeader)
+@(title: String, recipes: Seq[Recipe] = Seq())(content: Html)(implicit request: RequestHeader)
 
 <!DOCTYPE html>
 
@@ -92,7 +92,7 @@
     </head>
     <body>
     	@if(request.path=="/"){
-    		@header_main()
+    		@header_main(recipes)
     	} else {
     		@header_page()
     	}
