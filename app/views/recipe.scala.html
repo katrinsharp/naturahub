@@ -30,7 +30,7 @@
 						<div class="flexslider">
 							<ul class="slides">
 								@for(photo <- recipe.photos){
-									@if(photo.metadata.contains("slider")) {
+									@if(photo.metadata.typeOf == "slider") {
 										<li>
 											<img src="@routes.Assets.at("img/tmp/"+photo.key)" alt="alt text" />
 										</li>	
@@ -79,7 +79,7 @@
 					<div class="related-list cf">
 						@for(relatedRecipe <- relatedRecipes) {
 							<figure>
-								<a href="@routes.RecipeController.get(relatedRecipe._id)" class="thumb"><img src="@routes.Assets.at("img/tmp/"+relatedRecipe.photos.find(_.metadata.contains("slider")).get.key)")" alt="Alt text" /></a>
+								<a href="@routes.RecipeController.get(relatedRecipe._id)" class="thumb"><img src="@routes.Assets.at("img/tmp/"+relatedRecipe.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).key)")" alt="Alt text" /></a>
 								<a href="@routes.RecipeController.get(relatedRecipe._id)" class="heading">@relatedRecipe.name</a>
 							</figure>
 						}
