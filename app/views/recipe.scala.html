@@ -4,6 +4,16 @@
 <link href="@routes.Assets.at("player-skin/jplayer-black-and-yellow.css")" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.jplayer.min.js")"></script>
 
+@getWordFor(i: Int) = {
+	@{i match {
+		case 0 => {"first"}
+		case 1 => {"second"}
+		case 2 => {"third"}
+		case _ => {"last"}
+	}}
+	
+}
+
 @main("NaturaHub") {
 
 <body>
@@ -60,13 +70,39 @@
 					<div class="entry-content">
 
 						<h2 class="heading">@recipe.name</h2>
-
-						<div class="multicolumn">
-							<p>
-								@recipe.directions
-							</p>
-
+						
+						<!-- Ingredients -->
+						<div class="toggle-trigger">Ingredients</div>
+						<div class="toggle-container" style="display: none;">
+							@for(i <- 0 to recipe.phases.length - 1) {
+								<p>
+									Phase @{i+1}: @recipe.phases(i).description
+									<hr />
+									@for(ing <- recipe.phases(i).ingredients) {
+										<div>@ing</div>
+									}
+								</p>
+							}
 						</div>
+						<!-- End of Ingredients -->
+						<!-- Preparation Time -->
+						<div class="toggle-trigger">Preparation Time</div>
+						<div class="toggle-container" style="display: none;">
+							@recipe.prepTime
+						</div>
+						<!-- End of Preparation Time -->
+						<!-- Recipe yield -->
+						<div class="toggle-trigger">Recipe yield</div>
+						<div class="toggle-container" style="display: none;">
+							@recipe.recipeYield
+						</div>
+						<!-- End of Recipe yield -->
+						<!-- Directions -->
+						<div class="toggle-trigger">Directions</div>
+						<div class="toggle-container" style="display: none;">
+							@recipe.directions
+						</div>
+						<!-- End of Directions -->
 					</div>
 					<!-- ENDS entry content -->
 
