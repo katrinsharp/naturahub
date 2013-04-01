@@ -33,7 +33,7 @@ import org.joda.time.DateTime
 
 //https://github.com/sgodbillon/reactivemongo-demo-app/blob/master/app/controllers/Application.scala
 
-case class RecipeSubmit(recipe: Recipe, s: List[photos] = List())
+case class RecipeSubmit(recipe: Recipe, s: Seq[photos] = List())
 case class photos(key: String, originKey: String, isRemoved: Boolean)
 
 object RecipeController extends Controller with MongoController {
@@ -47,17 +47,17 @@ object RecipeController extends Controller with MongoController {
 			"created" -> jodaDate("yyyy-MM-dd"),			
 			"by" -> nonEmptyText,			
 			"directions" -> nonEmptyText.verifying("This field is required", (_.trim().length() > 3)),			
-			"phases" -> list(mapping(
+			"phases" -> seq(mapping(
 					"description" -> text,
 					"ingredients" -> seq(nonEmptyText)
 					)(RecipePhase.apply)(RecipePhase.unapply)),			
 			"prepTime" -> nonEmptyText,			
 			"recipeYield" -> nonEmptyText,			
 			"level" -> text.verifying("beginner, intermediate or advanced", {_.matches("""^beginner|intermediate|advanced""")}),			
-			"tags" -> list(nonEmptyText),			
-			"photos" -> ignored(List[S3Photo]())
+			"tags" -> seq(nonEmptyText),			
+			"photos" -> ignored(Seq[S3Photo]())
 			)(Recipe.apply)(Recipe.unapply),
-			"removed" -> list(mapping(
+			"removed" -> seq(mapping(
 					"photoId" -> text,
 					"originKey" -> text,
 					"removedPhoto" -> boolean
@@ -66,7 +66,7 @@ object RecipeController extends Controller with MongoController {
 		
 	def submitRecipe = Action {  implicit request =>
 		recipeForm.bindFromRequest.fold(
-			formWithErrors => {println(formWithErrors);BadRequest(views.html.recipe_form(formWithErrors))},
+			formWithErrors => {println(formWithErrors);BadRequest(views.html.recipes.recipe_form(formWithErrors))},
 			value => {
 				val id = value.recipe._id match {
 							case "-1" => BSONObjectID.generate.stringify
@@ -119,7 +119,7 @@ object RecipeController extends Controller with MongoController {
 					}
 					
 					photos.length match {
-						case 0 => Future(BadRequest(views.html.recipe_form(
+						case 0 => Future(BadRequest(views.html.recipes.recipe_form(
 								recipeForm.fill(value).withError(FormError("recipe.photos", "Minimum one photo is required")), 
 								originalPhotos.filter(_.metadata.typeOf == "slider")
 								)))
@@ -139,7 +139,7 @@ object RecipeController extends Controller with MongoController {
 								"tags" -> value.recipe.tags(0).split(",").map(_.trim()),
 								"photos" -> photos)).makeQueryDocument
 							newRecipe match {
-								case false => Application.collection.update(selector, modifier).map {
+								case false => Application.recipeCollection.update(selector, modifier).map {
 									e => {
 										Logger.debug(e.toString)
 										/*
@@ -157,7 +157,7 @@ object RecipeController extends Controller with MongoController {
 										Redirect(routes.RecipeController.get(id))
 									}
 								}
-								case true => Application.collection.insert(modifier).map {
+								case true => Application.recipeCollection.insert(modifier).map {
 									e => Logger.debug(e.toString);Redirect(routes.RecipeController.get(id))
 								}
 							}
@@ -171,7 +171,7 @@ object RecipeController extends Controller with MongoController {
 	
 	private def getRecipe(id: String): Recipe = {
 		val qb = QueryBuilder().query(Json.obj("_id" -> id))
-		val futureRecipe = Application.collection.find[JsValue](qb).toList.map(_.head.as[Recipe])				
+		val futureRecipe = Application.recipeCollection.find[JsValue](qb).toList.map(_.head.as[Recipe])				
 		val duration100 = Duration(1000, "millis")
 		val recipe = Await.result(futureRecipe, duration100).asInstanceOf[Recipe]
 		recipe
@@ -182,22 +182,22 @@ object RecipeController extends Controller with MongoController {
 		Async {
 			val recipe = getRecipe(id)	
 			val qbAll = QueryBuilder().query(Json.obj())
-			Application.collection.find[JsValue](qbAll, QueryOpts(batchSizeN=4)).toList.map  { relatedRecipes =>
-				Ok(views.html.recipe(recipe, relatedRecipes.map(r => r.as[Recipe])))
+			Application.recipeCollection.find[JsValue](qbAll, QueryOpts(batchSizeN=4)).toList.map  { relatedRecipes =>
+				Ok(views.html.recipes.recipe(recipe, relatedRecipes.map(r => r.as[Recipe])))
 			}
 		}
 	}
 
 	def add() = Action { implicit request =>
-		Ok(views.html.recipe_form(recipeForm))
+		Ok(views.html.recipes.recipe_form(recipeForm))
 	}
 	
 	def edit(id: String) = Action { implicit request =>
 		Async {
 			val qb = QueryBuilder().query(Json.obj("_id" -> id))
-			Application.collection.find[JsValue](qb).toList.map { recipes =>
+			Application.recipeCollection.find[JsValue](qb).toList.map { recipes =>
 				val recipe = recipes.head.as[Recipe]
-				Ok(views.html.recipe_form(recipeForm.fill(RecipeSubmit(recipe)), recipe.photos.filter(_.metadata.typeOf == "slider")))
+				Ok(views.html.recipes.recipe_form(recipeForm.fill(RecipeSubmit(recipe)), recipe.photos.filter(_.metadata.typeOf == "slider")))
 			}
 		}
 	}

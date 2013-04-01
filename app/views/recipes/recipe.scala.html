@@ -1,9 +1,5 @@
 @(recipe: Recipe, relatedRecipes: Seq[Recipe])(implicit request: RequestHeader)
 
-<!-- jplayer -->
-<link href="@routes.Assets.at("player-skin/jplayer-black-and-yellow.css")" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.jplayer.min.js")"></script>
-
 @getWordFor(i: Int) = {
 	@{i match {
 		case 0 => {"first"}

@@ -1,0 +1,81 @@
+@(myRecipes: Seq[Recipe], savedRecipes: Seq[Recipe])(implicit request: RequestHeader)
+
+<!-- jplayer -->
+<link href="@routes.Assets.at("player-skin/jplayer-black-and-yellow.css")" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.jplayer.min.js")"></script>
+
+@getWordFor(i: Int) = {
+	@{i match {
+		case 0 => {"first"}
+		case 1 => {"second"}
+		case 2 => {"third"}
+		case _ => {"last"}
+	}}
+	
+}
+
+@main("NaturaHub") {
+
+<body>
+
+	<!-- MAIN -->
+	<div id="main">
+		<div class="wrapper cf">
+
+			<!-- portfolio content-->
+			<div id="portfolio-content" class="cf">
+
+				<!-- project pager -->
+				<div class="project-pager cf">
+					<a class="previous-project" href="#">&#8592; Previous project</a>
+					<a class="next-project" href="#">Next project &#8594;</a>
+				</div>
+				<!-- ENDS project pager -->
+
+				<!-- project box -->
+				<div id="project-box" class="cf">
+
+					
+
+					<div class="info">
+						<p>
+							<a href="" class="launch" >My Recipes</a>
+						</p>
+						<p>
+							<a href="" class="launch" >Saved Recipes</a>
+						</p>
+					</div>
+
+					<!-- entry-content -->
+					<div class="entry-content cf">
+
+						<h2 class="heading">Heading</h2>
+						
+						@for(myRecipe <- myRecipes) {
+						
+							<div class="thumbnail one-half">
+								<a href="@routes.RecipeController.get(myRecipe._id)" class="thumb">
+									<img src="@routes.Assets.at("img/tmp/"+myRecipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).key)")" alt="Alt text" />
+								</a>
+							</div>	
+							<div class="one-half last">
+								<a href="@routes.RecipeController.get(myRecipe._id)">@myRecipe.name</a>
+							</div>
+							<div class="clearfix"></div>
+							<!--div class="block-divider10"></div-->
+						}
+					</div>
+					<!-- ENDS entry content -->
+
+				</div>
+				<!-- ENDS project box -->
+
+			</div>
+			<!-- ENDS portfolio content-->
+
+		</div><!-- ENDS WRAPPER -->
+	</div>
+	<!-- ENDS MAIN -->
+</body>
+
+}

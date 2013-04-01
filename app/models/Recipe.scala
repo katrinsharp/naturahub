@@ -12,14 +12,14 @@ case class Recipe(
 		created: DateTime, 
 		by: String, 
 		directions: String, 
-		phases: List[RecipePhase],
+		phases: Seq[RecipePhase],
 		prepTime: String,
 		recipeYield: String,
 		level: String, 
-		tags: List[String],
-		photos: List[S3Photo])
+		tags: Seq[String],
+		photos: Seq[S3Photo])
 
-object Recipe extends Function12[String, String, String, DateTime, String, String, List[RecipePhase], String, String, String, List[String], List[S3Photo], Recipe] {
+object Recipe extends Function12[String, String, String, DateTime, String, String, Seq[RecipePhase], String, String, String, Seq[String], Seq[S3Photo], Recipe] {
 	implicit val recipeWrites = Json.writes[Recipe]
 	implicit val recipeReads = Json.reads[Recipe]
 }

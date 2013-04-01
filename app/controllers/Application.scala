@@ -14,13 +14,14 @@ import models.Recipe
 object Application extends Controller with MongoController {
 
 	val db = ReactiveMongoPlugin.db
-	lazy val collection = db("recipes")
+	lazy val recipeCollection = db("recipes")
+	lazy val userCollection = db("users")
 
 	def index = Action { implicit request =>
 
 		Async {
 			val qb = QueryBuilder().query(Json.obj())
-			Application.collection.find[JsValue](qb).toList.map { recipes =>
+			Application.recipeCollection.find[JsValue](qb).toList.map { recipes =>
 				Ok(views.html.index(recipes.map(r => r.as[Recipe])))
 			}
 		}
