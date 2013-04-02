@@ -20,6 +20,9 @@
 
 /* GENERAL ------------------------------------------------------------*/
 
+.hidden {
+  display: none;
+}
 
 .cf:after,
 .cf:before {
@@ -416,10 +419,86 @@ body.home{
 }
 
 
+/* RECIPE DISPLAY----------------------------------------------------*/ 
 
-/* PORTFOLIO ----------------------------------------------------*/ 
+#recipe-display{
+  position: relative;
+  margin-top: 30px;
+  
+  #filter-container{
+  
+    margin-bottom: 60px;
+    
+    .heading{
+      border: none;
+      margin-bottom: 10px;
+      padding-bottom: 0px;  
+    }
+    
+    .portfolio-cat{ font-style: italic; }
+  }
+  
+  .project-pager{
+    text-align: center;
+    margin-bottom: 20px;
+    .previous-project{
+      float: left;
+    }
+    
+    .next-project{
+      float: right;
+    }
+  }
+  
+  #project-box{
+    .box-shadow();
+    margin-bottom: 60px;
+    
+    .info{
+      float: left;
+      /*width: 164px;  184 - 20*/
+      width: 124px;  /*144 - 20*/
+      padding-left: 20px;
+      /*margin-right: 68px;*/
+      margin-right: 8px;
+      font-size: 11px;
+      
+      strong{
+        font-weight: bold;
+        display: block;
+      }
+      
+      p{ margin-bottom: 12px; }
+      
+      .launch{
+        display: inline-block;
+        padding: 5px;
+        margin-left: -5px;
+      }
+    }
+    
+    .entry-content{
+      float: left;
+      /*width: 688px;  940 - (184 + 68) - 20*/
+      width: 768px;  /*940 - (124 + 8) - 20 - 20*/
+      padding-left: 10px;
+      padding-right: 10px;
+      margin-bottom: 40px;
+      
+      .multicolumn {
+        .column *{ padding-right: 20px; }
+      }
 
-#portfolio-content{
+    }
+  }
+  
+  margin-bottom: 60px;
+  
+}
+
+/* RECIPE BOOK SUMMARY ----------------------------------------------------*/ 
+
+#recipe-book-summary{
 	position: relative;
 	margin-top: 30px;
 	
@@ -452,6 +531,15 @@ body.home{
 		.box-shadow();
 		margin-bottom: 60px;
 		
+		.heading {
+		  padding-left: 20px;
+		  margin-bottom: 20px;
+		  line-height: 32px;
+		  img,span {
+		    vertical-align:middle;
+		  }
+		}
+		
 		.info{
 			float: left;
 			/*width: 164px;  184 - 20*/
@@ -459,7 +547,8 @@ body.home{
 			padding-left: 20px;
 			/*margin-right: 68px;*/
 			margin-right: 8px;
-			font-size: 11px;
+			font-size: 14px;
+			background-color: @fgColor;
 			
 			strong{
 				font-weight: bold;

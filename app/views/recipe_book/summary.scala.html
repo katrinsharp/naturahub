@@ -1,9 +1,5 @@
 @(myRecipes: Seq[Recipe], savedRecipes: Seq[Recipe])(implicit request: RequestHeader)
 
-<!-- jplayer -->
-<link href="@routes.Assets.at("player-skin/jplayer-black-and-yellow.css")" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.jplayer.min.js")"></script>
-
 @getWordFor(i: Int) = {
 	@{i match {
 		case 0 => {"first"}
@@ -14,6 +10,16 @@
 	
 }
 
+@shortName(str: String) = {
+
+ 	@if(str.length() > 20) {
+ 		@{str.substring(0,  20) + "..."}
+  	} else {
+  		@str
+  	}
+
+}
+
 @main("NaturaHub") {
 
 <body>
@@ -22,50 +28,126 @@
 	<div id="main">
 		<div class="wrapper cf">
 
-			<!-- portfolio content-->
-			<div id="portfolio-content" class="cf">
+			<!-- recipe book summary-->
+			<div id="recipe-book-summary" class="cf">
 
 				<!-- project pager -->
 				<div class="project-pager cf">
-					<a class="previous-project" href="#">&#8592; Previous project</a>
-					<a class="next-project" href="#">Next project &#8594;</a>
+					<h2 class="heading">My Recipe Book</h2>
 				</div>
 				<!-- ENDS project pager -->
 
 				<!-- project box -->
 				<div id="project-box" class="cf">
+				
+					<h4>
+						<div class="heading" id="selectedMenuText">
+							<img alt="folder32.png" title="folder32.png" src="@routes.Assets.at("img/mono-icons/folder32.png")"/>
+							<span>My Recipes</span>
+						</div>
+					</h4>
 
-					
-
-					<div class="info">
-						<p>
-							<a href="" class="launch" >My Recipes</a>
-						</p>
-						<p>
-							<a href="" class="launch" >Saved Recipes</a>
-						</p>
+					<div class="info lists-arrow">
+						<ul>
+							<li><a href="" class="launch menu-item" id="myRecipes">My Recipes</a></li>
+							<li><a href="" class="launch menu-item" id="myFavorites">My Favorites</a></li>
+							<li><a href="" class="launch menu-item" id="myTries">My Tries</a></li>
+							<li><a href="" class="launch menu-item" id="myTalks">I talk about</a></li>
+						</ul>
 					</div>
 
-					<!-- entry-content -->
-					<div class="entry-content cf">
-
-						<h2 class="heading">Heading</h2>
-						
+					<!-- my recipes -->
+					<div class="entry-content cf content-block" id="myRecipesBlock">
+					
+						<!-- head -->
+						<div class="one-fourth">
+							<strong>Name</strong>
+						</div>
+						<div class="one-fourth">
+							<strong>Status</strong>
+						</div>
+						<div class="one-fourth">
+							<strong>Date Added</strong>
+						</div>	
+						<div class="one-fourth last">
+							<strong>Notes</strong>
+						</div>
+						<div class="clearfix"></div>
+						<!-- end of head -->
+					
 						@for(myRecipe <- myRecipes) {
 						
-							<div class="thumbnail one-half">
-								<a href="@routes.RecipeController.get(myRecipe._id)" class="thumb">
+							<!--div class="one-fourth thumb">
+								<a href="@routes.RecipeController.get(myRecipe._id)" >
 									<img src="@routes.Assets.at("img/tmp/"+myRecipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).key)")" alt="Alt text" />
 								</a>
+							</div-->
+							<div class="one-fourth">
+								<a href="@routes.RecipeController.get(myRecipe._id)" title="@myRecipe.name">@shortName(myRecipe.name)</a>
+							</div>
+							<div class="one-fourth">
+								Public
+							</div>
+							<div class="one-fourth">
+								@org.joda.time.format.ISODateTimeFormat.date().print(myRecipe.created)
 							</div>	
-							<div class="one-half last">
-								<a href="@routes.RecipeController.get(myRecipe._id)">@myRecipe.name</a>
+							<div class="one-fourth last">
+								Empty
 							</div>
 							<div class="clearfix"></div>
-							<!--div class="block-divider10"></div-->
+							
 						}
 					</div>
-					<!-- ENDS entry content -->
+					<!-- ENDS my recipes -->
+					
+					<!-- my favorites -->
+					<div class="entry-content cf content-block" style="display: none" id="myFavoritesBlock">
+					
+						<!-- head -->
+						<div class="one-fourth">
+							<strong>Name</strong>
+						</div>
+						<div class="one-fourth">
+							<strong>Status</strong>
+						</div>
+						<div class="one-fourth">
+							<strong>Date Added</strong>
+						</div>	
+						<div class="one-fourth last">
+							<strong>Notes</strong>
+						</div>
+						<div class="clearfix"></div>
+						<!-- end of head -->
+					
+						@for(savedRecipe <- savedRecipes) {
+						
+							<div class="one-fourth">
+								<a href="@routes.RecipeController.get(savedRecipe._id)" title="@savedRecipe.name">ff @shortName(savedRecipe.name)</a>
+							</div>
+							<div class="one-fourth">
+								Public
+							</div>
+							<div class="one-fourth">
+								@org.joda.time.format.ISODateTimeFormat.date().print(savedRecipe.created)
+							</div>	
+							<div class="one-fourth last">
+								Empty
+							</div>
+							<div class="clearfix"></div>
+							
+						}
+					</div>
+					<!-- ENDS my favorites -->
+					
+					<!-- my tries -->
+					<div class="entry-content cf content-block" style="display: none" id="myTriesBlock">
+						Empty
+					</div>
+					
+					<!-- my talks -->
+					<div class="entry-content cf content-block" style="display: none" id="myTalksBlock">
+					    Empty
+					</div>
 
 				</div>
 				<!-- ENDS project box -->
@@ -77,5 +159,22 @@
 	</div>
 	<!-- ENDS MAIN -->
 </body>
-
+<script>
+	function bindtoMenuItem(e) {
+		e.preventDefault();
+		$(".content-block").css("display", "none");
+		$("#"+$(this).attr("id")+"Block").css("display", "");
+		$("#selectedMenuText > span").text($(this).text());
+		return false;
+	}
+	function bindtoPhotoRemove(e) {
+		e.preventDefault();
+		$(this).parent().siblings(".removedPhoto").val("true");
+		$(el).fileupload('clear');
+		return false;
+	}
+	$(function() {
+		$('.menu-item').bind('click', bindtoMenuItem);
+	});
+</script>
 }
