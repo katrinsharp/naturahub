@@ -13,9 +13,9 @@
 @shortName(str: String) = {
 
  	@if(str.length() > 20) {
- 		@{str.substring(0,  20) + "..."}
+ 		@{str.substring(0,  20).toLowerCase() + "..."}
   	} else {
-  		@str
+  		@str.toLowerCase()
   	}
 
 }
@@ -39,20 +39,29 @@
 
 				<!-- project box -->
 				<div id="project-box" class="cf">
-				
-					<h4>
-						<div class="heading" id="selectedMenuText">
-							<img alt="folder32.png" title="folder32.png" src="@routes.Assets.at("img/mono-icons/folder32.png")"/>
-							<span>My Recipes</span>
-						</div>
-					</h4>
 					
-					<div class="info lists-arrow">
+					<div class="info">
 						<ul id="nav-recipe-summary">
-							<li><a href="" class="launch menu-item" id="myRecipes">My Recipes</a></li>
-							<li><a href="" class="launch menu-item" id="myFavorites">My Favorites</a></li>
-							<li><a href="" class="launch menu-item" id="myTries">My Tries</a></li>
-							<li><a href="" class="launch menu-item" id="myTalks">I talk about</a></li>
+							<li>
+								<span class="summary-menu-item summary-current">
+									<a href="" class="launch2 menu-item" id="myRecipes">My Recipes</a>
+								</span>
+							</li>
+							<li>
+							    <span class="summary-menu-item summary-not-current">
+									<a href="" class="launch2 menu-item" id="myFavorites">My Favorites</a>
+								</span>
+							</li>
+							<li>
+								<span class="summary-menu-item summary-not-current">
+									<a href="" class="launch2 menu-item" id="myTries">My Tries</a>
+								</span>
+							</li>
+							<li>
+								<span class="summary-menu-item summary-not-current">
+									<a href="" class="launch2 menu-item" id="myTalks">I talk about</a>
+								</span>	
+							</li>
 						</ul>
 						<!-- nav -->
 						<div id="combo-holder-recipe-summary"></div>
@@ -166,7 +175,8 @@
 		e.preventDefault();
 		$(".content-block").addClass("visuallyHide");
 		$("#"+$(this).attr("id")+"Block").removeClass("visuallyHide");
-		$("#selectedMenuText > span").text($(this).text());
+		$(".summary-menu-item.summary-current").removeClass("summary-current").addClass("summary-not-current");
+		$(this).parent().removeClass("summary-not-current").addClass("summary-current");
 		return false;
 	}
 	$(function() {

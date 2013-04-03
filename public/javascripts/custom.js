@@ -235,7 +235,7 @@ jQuery(document).ready(function($) {
 	//}).appendTo("#combo-holder-recipe-summary select");
 	
 	// Populate dropdown with menu items
-	$("#nav-recipe-summary a").each(function() {
+	$("#nav-recipe-summary span a").each(function() {
 		var el = $(this);		
 		var label = $(this).parent().parent().attr('id');
 		var sub = (label == 'nav') ? '' : '- ';
