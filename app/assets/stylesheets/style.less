@@ -36,6 +36,9 @@
 
 .cf {
     zoom:1;
+    ul, ol {
+      margin: 0;
+    }
 }
 
 .wrapper{
@@ -135,6 +138,21 @@ h6{ font-size: 14px; }
 	margin-top: 40px;
 	margin-bottom: 30px;
 	float: left;
+}
+
+#comboNav-recipe-summary{
+  width: 100%;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  float: left;
+}
+
+.visuallyHide {
+position: absolute;
+overflow: hidden;
+clip: rect(0 0 0 0);
+height: 1px; width: 1px;
+margin: -1px; padding: 0; border: 0;
 }
 
 /* NAVIGATION ------------------------------------------------------------*/
@@ -453,7 +471,7 @@ body.home{
   #project-box{
     .box-shadow();
     margin-bottom: 60px;
-    
+    background:  @fgColor;
     .info{
       float: left;
       /*width: 164px;  184 - 20*/
@@ -542,13 +560,12 @@ body.home{
 		
 		.info{
 			float: left;
-			/*width: 164px;  184 - 20*/
-			width: 124px;  /*144 - 20*/
+			width: 164px;  /*184 - 20*/
+			/*width: 124px;  144 - 20*/
 			padding-left: 20px;
 			/*margin-right: 68px;*/
 			margin-right: 8px;
 			font-size: 14px;
-			background-color: @fgColor;
 			
 			strong{
 				font-weight: bold;
@@ -567,7 +584,8 @@ body.home{
 		.entry-content{
 			float: left;
 			/*width: 688px;  940 - (184 + 68) - 20*/
-			width: 768px;  /*940 - (124 + 8) - 20 - 20*/
+			width: 728px;  /*940 - (184 + 8) - 20*/
+			/*width: 768px;  940 - (124 + 8) - 20 - 20*/
 			padding-left: 10px;
 			padding-right: 10px;
 			margin-bottom: 40px;

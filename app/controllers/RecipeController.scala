@@ -197,6 +197,9 @@ object RecipeController extends Controller with MongoController {
 			val qb = QueryBuilder().query(Json.obj("_id" -> id))
 			Application.recipeCollection.find[JsValue](qb).toList.map { recipes =>
 				val recipe = recipes.head.as[Recipe]
+				println(recipe)
+				println("++++++++++++++++++++++++++++++++++++++++++++++")
+				println(recipeForm.fill(RecipeSubmit(recipe)))
 				Ok(views.html.recipes.recipe_form(recipeForm.fill(RecipeSubmit(recipe)), recipe.photos.filter(_.metadata.typeOf == "slider")))
 			}
 		}

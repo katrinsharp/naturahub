@@ -2,9 +2,6 @@
 
 <!-- reply move form -->
 <!--script src="@routes.Assets.at("javascripts/moveform.js")"></script-->
-<link rel="stylesheet" media="all" href="@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))"/>
-<link rel="stylesheet" media="all" href="@routes.Assets.at("bootstrap-select/bootstrap-select.css")"/>
-<script src="@routes.Assets.at("javascripts/fileupload/bootstrap-fileupload.js")"></script>
 
 @import views.html.helper._
 
@@ -15,7 +12,7 @@
 				<span class="error">@Messages(recipeForm(fieldName+nId).error.head.message)</span>
 			}
 		</label>
-		<input id="@{recipeForm(fieldName).name+nId}" name="@{recipeForm(fieldName).name+nId}" title="@hint" type="text" value="@value" class="form-poshytip"/>	
+		<input id="@{recipeForm(fieldName).name+nId}" name="@{recipeForm(fieldName).name+nId}" title="@hint" type="text" value="@value" class="form-poshytip" />	
 		
 }
 

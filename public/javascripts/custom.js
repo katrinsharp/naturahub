@@ -220,6 +220,44 @@ jQuery(document).ready(function($) {
 	  location = this.options[this.selectedIndex].value;
 	});
 	
+	//##########################################
+	// Create Combo Navi -recipe-summary
+	//##########################################	
+		
+	// Create the dropdown base
+	$("<select id='comboNav-recipe-summary' />").appendTo("#combo-holder-recipe-summary");
+	
+	// Create default option "Go to..."
+	//$("<option />", {
+	//	"selected": "selected",
+	//	"value"   : "",
+	//	"text"    : "Choose..."
+	//}).appendTo("#combo-holder-recipe-summary select");
+	
+	// Populate dropdown with menu items
+	$("#nav-recipe-summary a").each(function() {
+		var el = $(this);		
+		var label = $(this).parent().parent().attr('id');
+		var sub = (label == 'nav') ? '' : '- ';
+		
+		$("<option />", {
+		 "value"   : el.attr("href"),
+		 "text"    :  sub + el.text(),
+		 "id"      : el.attr("id")
+		}).appendTo("#combo-holder-recipe-summary select");
+	});
+
+	
+	//##########################################
+	// Recipe summary action
+	//##########################################
+	
+	$("#comboNav-recipe-summary").change(function() {
+	$(".content-block").addClass("visuallyHide");
+	$("#"+$(this).children("option:selected").attr("id")+"Block").removeClass("visuallyHide");
+	 
+	});
+	
 	
 	//##########################################
 	// Resize event

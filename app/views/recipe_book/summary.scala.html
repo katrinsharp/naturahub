@@ -46,30 +46,32 @@
 							<span>My Recipes</span>
 						</div>
 					</h4>
-
+					
 					<div class="info lists-arrow">
-						<ul>
+						<ul id="nav-recipe-summary">
 							<li><a href="" class="launch menu-item" id="myRecipes">My Recipes</a></li>
 							<li><a href="" class="launch menu-item" id="myFavorites">My Favorites</a></li>
 							<li><a href="" class="launch menu-item" id="myTries">My Tries</a></li>
 							<li><a href="" class="launch menu-item" id="myTalks">I talk about</a></li>
 						</ul>
+						<!-- nav -->
+						<div id="combo-holder-recipe-summary"></div>
 					</div>
 
 					<!-- my recipes -->
 					<div class="entry-content cf content-block" id="myRecipesBlock">
 					
 						<!-- head -->
-						<div class="one-fourth">
+						<div class="one-fourth hidden-in-mobile">
 							<strong>Name</strong>
 						</div>
-						<div class="one-fourth">
+						<div class="one-fourth hidden-in-mobile">
 							<strong>Status</strong>
 						</div>
-						<div class="one-fourth">
+						<div class="one-fourth hidden-in-mobile">
 							<strong>Date Added</strong>
 						</div>	
-						<div class="one-fourth last">
+						<div class="one-fourth hidden-in-mobile last">
 							<strong>Notes</strong>
 						</div>
 						<div class="clearfix"></div>
@@ -82,16 +84,16 @@
 									<img src="@routes.Assets.at("img/tmp/"+myRecipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).key)")" alt="Alt text" />
 								</a>
 							</div-->
-							<div class="one-fourth">
+							<div class="one-fourth one-column">
 								<a href="@routes.RecipeController.get(myRecipe._id)" title="@myRecipe.name">@shortName(myRecipe.name)</a>
 							</div>
-							<div class="one-fourth">
+							<div class="one-fourth hidden-in-mobile">
 								Public
 							</div>
-							<div class="one-fourth">
+							<div class="one-fourth hidden-in-mobile">
 								@org.joda.time.format.ISODateTimeFormat.date().print(myRecipe.created)
 							</div>	
-							<div class="one-fourth last">
+							<div class="one-fourth hidden-in-mobile last">
 								Empty
 							</div>
 							<div class="clearfix"></div>
@@ -101,19 +103,19 @@
 					<!-- ENDS my recipes -->
 					
 					<!-- my favorites -->
-					<div class="entry-content cf content-block" style="display: none" id="myFavoritesBlock">
+					<div class="entry-content cf content-block" id="myFavoritesBlock">
 					
 						<!-- head -->
-						<div class="one-fourth">
+						<div class="one-fourth hidden-in-mobile">
 							<strong>Name</strong>
 						</div>
-						<div class="one-fourth">
+						<div class="one-fourth hidden-in-mobile">
 							<strong>Status</strong>
 						</div>
-						<div class="one-fourth">
+						<div class="one-fourth hidden-in-mobile">
 							<strong>Date Added</strong>
 						</div>	
-						<div class="one-fourth last">
+						<div class="one-fourth hidden-in-mobile last">
 							<strong>Notes</strong>
 						</div>
 						<div class="clearfix"></div>
@@ -121,16 +123,16 @@
 					
 						@for(savedRecipe <- savedRecipes) {
 						
-							<div class="one-fourth">
+							<div class="one-fourth one-column">
 								<a href="@routes.RecipeController.get(savedRecipe._id)" title="@savedRecipe.name">ff @shortName(savedRecipe.name)</a>
 							</div>
-							<div class="one-fourth">
+							<div class="one-fourth hidden-in-mobile">
 								Public
 							</div>
-							<div class="one-fourth">
+							<div class="one-fourth hidden-in-mobile">
 								@org.joda.time.format.ISODateTimeFormat.date().print(savedRecipe.created)
 							</div>	
-							<div class="one-fourth last">
+							<div class="one-fourth hidden-in-mobile last">
 								Empty
 							</div>
 							<div class="clearfix"></div>
@@ -140,12 +142,12 @@
 					<!-- ENDS my favorites -->
 					
 					<!-- my tries -->
-					<div class="entry-content cf content-block" style="display: none" id="myTriesBlock">
+					<div class="entry-content cf content-block" id="myTriesBlock">
 						Empty
 					</div>
 					
 					<!-- my talks -->
-					<div class="entry-content cf content-block" style="display: none" id="myTalksBlock">
+					<div class="entry-content cf content-block" id="myTalksBlock">
 					    Empty
 					</div>
 
@@ -162,19 +164,16 @@
 <script>
 	function bindtoMenuItem(e) {
 		e.preventDefault();
-		$(".content-block").css("display", "none");
-		$("#"+$(this).attr("id")+"Block").css("display", "");
+		$(".content-block").addClass("visuallyHide");
+		$("#"+$(this).attr("id")+"Block").removeClass("visuallyHide");
 		$("#selectedMenuText > span").text($(this).text());
-		return false;
-	}
-	function bindtoPhotoRemove(e) {
-		e.preventDefault();
-		$(this).parent().siblings(".removedPhoto").val("true");
-		$(el).fileupload('clear');
 		return false;
 	}
 	$(function() {
 		$('.menu-item').bind('click', bindtoMenuItem);
+		$("#myFavoritesBlock").addClass("visuallyHide");
+		$("#myTriesBlock").addClass("visuallyHide");
+		$("#myTalksBlock").addClass("visuallyHide");
 	});
 </script>
 }

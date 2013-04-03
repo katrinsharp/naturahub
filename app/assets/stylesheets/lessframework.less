@@ -22,6 +22,7 @@ px      68    160    252    344    436    528    620    712    804    896    */
 
 
 #comboNav{ display: none; }
+#comboNav-recipe-summary{ display: none; }
 
 .wrapper{
 	width: 940px;
@@ -55,6 +56,10 @@ px      68    160    252    344    436    528    620    712    */
 	
 	#nav{ display: block; }
 	#comboNav{ display: none; }
+	
+	 #nav-recipe-summary{ display: block; }
+  #comboNav-recipe-summary{ display: none; }
+	
 	
 	/* CAROUSEL TABLET ----------------------------------------------------*/ 
 	
@@ -202,7 +207,7 @@ px      68    160    252    344    436    528    620    712    */
 
 	#portfolio-content, #recipe-book-summary, #recipe-display{
 		#project-box{
-			
+			 background:  @fgColor;
 			.info{
 				width: 140px;  /* 160 - 20 */
 				padding-left: 20px;
@@ -210,7 +215,8 @@ px      68    160    252    344    436    528    620    712    */
 			}
 			
 			.entry-content{
-				width: 528px; 
+				/*width: 528px;*/
+				width: 692px; 
 				margin-bottom: 40px;
 				
 				.multicolumn {
@@ -282,6 +288,9 @@ px      68    160    252    */
 	
 	#nav{ display: none; }
 	#comboNav{ display: block; }
+	
+	 #nav-recipe-summary{ display: none; }
+  #comboNav-recipe-summary{ display: block; }
 	
 	/* HEADLINE MOBILE ----------------------------------------------------*/ 
 	
@@ -448,7 +457,7 @@ px      68    160    252    */
 	
 	/* PORTFOLIO MOBILE ----------------------------------------------------*/ 
 
-	#portfolio-content, #recipe-book-summary, #recipe-display{
+	#portfolio-content{
 		#project-box{
 			
 			.info{
@@ -475,6 +484,48 @@ px      68    160    252    */
 			}
 		}
 	}
+	
+/* RECIPE BOOK SUMMARY, RECIPE DISPLAY MOBILE ----------------------------------------------------*/
+	#recipe-book-summary, #recipe-display{
+    #project-box{
+       background:  @fgColor;
+       
+      .info{
+        width: 212px;
+        padding-left: 20px;
+        margin-right: 24px;
+        margin-bottom: 30px;
+      }
+      
+      .entry-content{
+        width: 252px; 
+        margin-bottom: 40px;
+        margin-left: 0px;
+        padding-left: 0px;
+        
+        .multicolumn {
+          .column *{
+            width: 100px;  
+            padding-right: 0px;
+          }
+          
+          .column.last{ margin-right: 0px; }
+        }
+        
+        .one-column {
+          width: 97% !important;
+          text-align: center;
+          clear:right;
+          margin-right:0 !important;
+        }
+        
+        .hidden-in-mobile {
+          display: none;
+        }
+  
+      }
+    }
+  }
 	
 	
 	/* RELATED PROJECTS MOBILE ---------------------------------------------------*/
@@ -535,6 +586,9 @@ px      68    160    252    344    436    */
 	
 	#nav{ display: none; }
 	#comboNav{ display: block; }
+	
+	#nav-recipe-summary{ display: none; }
+  #comboNav-recipe-summary{ display: block; }
 	
 	/* CAROUSEL WIDE MOBILE ----------------------------------------------------*/ 
 	
@@ -682,7 +736,7 @@ px      68    160    252    344    436    */
 
 	#portfolio-content, #recipe-book-summary, #recipe-display{
 		#project-box{
-			
+			 background:  @fgColor;
 			.info{
 				width: 436px - 40;
 				padding-left: 20px;
