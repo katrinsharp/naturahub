@@ -3,19 +3,20 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+GET     /                           						controllers.Application.index
 
 # Recipes
-GET		/recipe/add					controllers.RecipeController.add
-GET		/recipe/:id					controllers.RecipeController.get(id: String)
-GET		/recipe/edit/:id			controllers.RecipeController.edit(id: String)
-POST	/recipe/submitRecipe		controllers.RecipeController.submitRecipe
-GET		/recipe/delete/:id			controllers.RecipeController.delete(id: String)
+GET		/recipe/add											controllers.RecipeController.add
+GET		/recipe/:id											controllers.RecipeController.get(id: String)
+GET		/recipe/edit/:id									controllers.RecipeController.edit(id: String)
+POST	/recipe/submitRecipe								controllers.RecipeController.submitRecipe
+GET		/recipe/delete/:id									controllers.RecipeController.delete(id: String)
 
 #Users
-GET		/user/:id/recipe-book		controllers.UserController.recipeBook(id: String)
-# POST	/user/:id/favorites/recipe/save/:id	
+GET		/user/:id/recipe-book								controllers.UserController.recipeBook(id: String)
+POST	/user/favorites/recipe/save							controllers.UserController.saveToFavorites	
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
-GET     /webjars/*file              controllers.WebJarAssets.at(file)
+# Map static resources from the /public folder 
+# to the /assets URL path
+GET     /assets/*file               						controllers.Assets.at(path="/public", file)
+GET     /webjars/*file              						controllers.WebJarAssets.at(file)

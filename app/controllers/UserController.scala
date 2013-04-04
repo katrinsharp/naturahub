@@ -32,9 +32,17 @@ import models.RecipePhase
 import org.joda.time.DateTime
 import models.User
 
-object UserController extends Controller with MongoController {
+case class recipeSave(userId: String, recipeId: String)
 
-	private def getUser(id: String): User = {
+object UserController extends Controller with MongoController {
+	
+	val recipeForm: Form[recipeSave] = Form(
+		mapping(
+			"userId" -> nonEmptyText, 	
+			"recipeId" -> nonEmptyText
+			)(recipeSave.apply)(recipeSave.unapply))
+
+	def getUser(id: String): User = {
 		val qb = QueryBuilder().query(Json.obj("_id" -> id))
 		val future = Application.userCollection.find[JsValue](qb).toList.map(_.head.as[User])				
 		val duration100 = Duration(1000, "millis")
@@ -59,5 +67,25 @@ object UserController extends Controller with MongoController {
 				Ok(views.html.recipe_book.summary(partitionedRecipes._1, partitionedRecipes._2))
 			}
 		}
+	}
+	
+	def saveToFavorites() = Action { implicit request =>
+		
+		recipeForm.bindFromRequest.fold(
+			formWithErrors => BadRequest("Error saving to favorites: bad parameter"),
+			value => {
+				Async {
+					//db.blogs.update({id:"001"}, {$push:{comments:{title:"commentX",content:".."}}});
+					val qbUser = QueryBuilder().query(Json.obj("_id" -> value.userId)).makeQueryDocument 
+					val modifier = QueryBuilder().query(Json.obj("$push" -> Json.obj("savedRecipeIds" -> value.recipeId))).makeQueryDocument
+					Application.userCollection.update(qbUser, modifier)
+					.map(_ => Redirect(routes.RecipeController.get(value.recipeId))).recover { case e => 
+						{
+							Logger.debug(e.getMessage)
+							BadRequest(s"Error saving to favorites: ${e.getMessage}")
+						}
+					}
+				}
+			})
 	}
 }

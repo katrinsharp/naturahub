@@ -1,4 +1,6 @@
-@(recipe: Recipe, relatedRecipes: Seq[Recipe])(implicit request: RequestHeader)
+@(recipe: Recipe, relatedRecipes: Seq[Recipe])(implicit request: RequestHeader, session: play.api.mvc.Session)
+
+@import play.api.libs.json._
 
 @getWordFor(i: Int) = {
 	@{i match {
@@ -8,6 +10,10 @@
 		case _ => {"last"}
 	}}
 	
+}
+
+@isSaved() = @{
+	Json.fromJson[User](Json.parse(session.get("user").get)).get.savedRecipeIds.find(_ == recipe._id) != None
 }
 
 @main("NaturaHub") {
@@ -61,7 +67,15 @@
 							<a href="@routes.RecipeController.delete(recipe._id)" class="launch" >Delete Recipe</a>
 						</p>
 						<p>
-							<!--a href="@@routes.RecipeController.saveToFavorites(recipe._id)" class="launch" >Save to Favorites</a-->
+							@if(isSaved()) {
+								Delete from Favorites
+							}else {
+								@helper.form(action = routes.UserController.saveToFavorites, 'id -> "saveToFavoritesForm") {
+									<input type="hidden" value="5158fde3b6f1b919c88a93ac" name="userId"/>
+									<input type="hidden" value="@recipe._id" name="recipeId"/>
+									<a href="" class="launch" id="saveToFavoritesLink">Save to Favorites</a>
+								}
+							}
 						</p>
 					</div>
 
@@ -129,5 +143,14 @@
 	</div>
 	<!-- ENDS MAIN -->
 </body>
-
+<script>
+	function bindtosaveToFavoritesLink(e) {
+		e.preventDefault();
+		$("#saveToFavoritesForm").submit();
+		return false;
+	}
+	$(function() {
+		$('#saveToFavoritesLink').bind('click', bindtosaveToFavoritesLink);
+	});
+</script>
 }

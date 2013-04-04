@@ -87,7 +87,7 @@ object RecipeController extends Controller with MongoController {
 					}
 					
 					Logger.debug("photos: "+photos.length)
-					photos.foreach(f => println(f.key))
+					photos.foreach(f => Logger.debug(f.key))
 					Logger.debug(s"removed: "+value.s.toString)
 					
 					//val removedPhotos = photos.filter(p => {

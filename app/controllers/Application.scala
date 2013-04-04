@@ -10,6 +10,7 @@ import play.modules.reactivemongo.PlayBsonImplicits._
 import play.api.libs.json._
 import play.api.Play.current
 import models.Recipe
+import models.User
 
 object Application extends Controller with MongoController {
 
@@ -22,7 +23,7 @@ object Application extends Controller with MongoController {
 		Async {
 			val qb = QueryBuilder().query(Json.obj())
 			Application.recipeCollection.find[JsValue](qb).toList.map { recipes =>
-				Ok(views.html.index(recipes.map(r => r.as[Recipe])))
+				Ok(views.html.index(recipes.map(r => r.as[Recipe]))).withSession("user" -> Json.toJson(UserController.getUser("5158fde3b6f1b919c88a93ac")).toString)
 			}
 		}
 	}
