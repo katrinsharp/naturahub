@@ -16,6 +16,10 @@
 	Json.fromJson[User](Json.parse(session.get("user").get)).get.savedRecipeIds.find(_ == recipe._id) != None
 }
 
+@isMyRecipe() = @{
+	Json.fromJson[User](Json.parse(session.get("user").get)).get.myRecipeIds.find(_ == recipe._id) != None
+}
+
 @main("NaturaHub") {
 
 <body>
@@ -26,13 +30,6 @@
 
 			<!-- recipe display-->
 			<div id="recipe-display" class="cf">
-
-				<!-- project pager -->
-				<div class="project-pager cf">
-					<a class="previous-project" href="#">&#8592; Previous project</a>
-					<a class="next-project" href="#">Next project &#8594;</a>
-				</div>
-				<!-- ENDS project pager -->
 
 				<!-- project box -->
 				<div id="project-box" class="cf">
@@ -60,20 +57,33 @@
 						<p>
 							<strong>Date </strong> @org.joda.time.format.ISODateTimeFormat.date().print(recipe.created)
 						</p>
-						<p>
-							<a href="@routes.RecipeController.edit(recipe._id)" class="launch" >Edit Recipe</a>
-						</p>
-						<p>
-							<a href="@routes.RecipeController.delete(recipe._id)" class="launch" >Delete Recipe</a>
-						</p>
+						
+						@if(isMyRecipe()) {
+							<p>
+								<a href="@routes.RecipeController.edit(recipe._id)" class="launch" >Edit Recipe</a>
+							</p>
+							<p>
+							
+								@helper.form(action = routes.RecipeController.delete, 'id -> "deleteRecipeForm") {
+									<input type="hidden" value="5158fde3b6f1b919c88a93ac" name="userId"/>
+									<input type="hidden" value="@recipe._id" name="recipeId"/>
+									<a href="" class="launch submitForm">Delete Recipe</a>
+								}
+							</p>
+						}
+						
 						<p>
 							@if(isSaved()) {
-								Delete from Favorites
+								@helper.form(action = routes.UserController.deleteFromFavorites, 'id -> "deleteFromFavoritesForm") {
+									<input type="hidden" value="5158fde3b6f1b919c88a93ac" name="userId"/>
+									<input type="hidden" value="@recipe._id" name="recipeId"/>
+									<a href="" class="launch submitForm">Delete from Favorites</a>
+								}
 							}else {
 								@helper.form(action = routes.UserController.saveToFavorites, 'id -> "saveToFavoritesForm") {
 									<input type="hidden" value="5158fde3b6f1b919c88a93ac" name="userId"/>
 									<input type="hidden" value="@recipe._id" name="recipeId"/>
-									<a href="" class="launch" id="saveToFavoritesLink">Save to Favorites</a>
+									<a href="" class="launch submitForm">Save to Favorites</a>
 								}
 							}
 						</p>
@@ -144,13 +154,13 @@
 	<!-- ENDS MAIN -->
 </body>
 <script>
-	function bindtosaveToFavoritesLink(e) {
+	function bindtoSubmitFormLink(e) {
 		e.preventDefault();
-		$("#saveToFavoritesForm").submit();
+		$(this).closest("form").submit();
 		return false;
 	}
 	$(function() {
-		$('#saveToFavoritesLink').bind('click', bindtosaveToFavoritesLink);
+		$('.submitForm').bind('click', bindtoSubmitFormLink);
 	});
 </script>
 }

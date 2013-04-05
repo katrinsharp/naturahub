@@ -36,7 +36,7 @@ case class recipeSave(userId: String, recipeId: String)
 
 object UserController extends Controller with MongoController {
 	
-	val recipeForm: Form[recipeSave] = Form(
+	val recipeManipulateForm: Form[recipeSave] = Form(
 		mapping(
 			"userId" -> nonEmptyText, 	
 			"recipeId" -> nonEmptyText
@@ -71,7 +71,7 @@ object UserController extends Controller with MongoController {
 	
 	def saveToFavorites() = Action { implicit request =>
 		
-		recipeForm.bindFromRequest.fold(
+		recipeManipulateForm.bindFromRequest.fold(
 			formWithErrors => BadRequest("Error saving to favorites: bad parameter"),
 			value => {
 				Async {
@@ -79,10 +79,35 @@ object UserController extends Controller with MongoController {
 					val qbUser = QueryBuilder().query(Json.obj("_id" -> value.userId)).makeQueryDocument 
 					val modifier = QueryBuilder().query(Json.obj("$push" -> Json.obj("savedRecipeIds" -> value.recipeId))).makeQueryDocument
 					Application.userCollection.update(qbUser, modifier)
-					.map(_ => Redirect(routes.RecipeController.get(value.recipeId))).recover { case e => 
+					.map(_ => Redirect(routes.RecipeController.get(value.recipeId))
+							.withSession("user" -> Json.toJson(UserController.getUser("5158fde3b6f1b919c88a93ac")).toString)
+						).recover { case e => 
 						{
 							Logger.debug(e.getMessage)
 							BadRequest(s"Error saving to favorites: ${e.getMessage}")
+						}
+					}
+				}
+			})
+	}
+	
+	def deleteFromFavorites() = Action { implicit request =>
+		
+		recipeManipulateForm.bindFromRequest.fold(
+			formWithErrors => BadRequest("Error deleting from favorites: bad parameter"),
+			value => {
+				Async {
+					//db.blogs.update({id:"001"}, {$push:{comments:{title:"commentX",content:".."}}});
+					val qbUser = QueryBuilder().query(Json.obj("_id" -> value.userId)).makeQueryDocument 
+					val modifier = QueryBuilder().query(Json.obj("$pull" -> Json.obj("savedRecipeIds" -> value.recipeId))).makeQueryDocument
+					Logger.debug("deleteFromFavorites")
+					Application.userCollection.update(qbUser, modifier)
+					.map(_ => Redirect(routes.RecipeController.get(value.recipeId))
+							.withSession("user" -> Json.toJson(UserController.getUser("5158fde3b6f1b919c88a93ac")).toString)
+						).recover { case e => 
+						{
+							Logger.debug(e.getMessage)
+							BadRequest(s"Error deleting from favorites: ${e.getMessage}")
 						}
 					}
 				}

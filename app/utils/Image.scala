@@ -13,7 +13,12 @@ object Image {
 	val RECIPE_PREVIEW_WIDTH = 300
 	
 	def saveAsSlider(inputFile: File): String = {
-		resizeAndSave(inputFile, RECIPE_SLIDER_SIZE._1, RECIPE_SLIDER_SIZE._2)
+		//resizeAndSave(inputFile, RECIPE_SLIDER_SIZE._1, RECIPE_SLIDER_SIZE._2)
+		val originalImage = ImageIO.read(inputFile)
+		val scaledImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, RECIPE_SLIDER_SIZE._1)
+		val scaledImage2 = Scalr.crop(scaledImage, 0, (scaledImage.getHeight() - RECIPE_SLIDER_SIZE._2)/2 toInt, RECIPE_SLIDER_SIZE._1, RECIPE_SLIDER_SIZE._2, null)
+		save(scaledImage2)
+		
 	}
 	
 	def saveAsPreview(inputFile: File): String = {

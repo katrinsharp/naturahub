@@ -64,9 +64,12 @@ object RecipeController extends Controller with MongoController {
 					)(photos.apply)(photos.unapply))
 			)(RecipeSubmit.apply)(RecipeSubmit.unapply))
 		
+	/*
+	 *  TODO: Add the link of this recipe to the user who submitted it
+	 */		
 	def submitRecipe = Action {  implicit request =>
 		recipeForm.bindFromRequest.fold(
-			formWithErrors => {println(formWithErrors);BadRequest(views.html.recipes.recipe_form(formWithErrors))},
+			formWithErrors => {BadRequest(views.html.recipes.recipe_form(formWithErrors))},
 			value => {
 				val id = value.recipe._id match {
 							case "-1" => BSONObjectID.generate.stringify
@@ -202,8 +205,29 @@ object RecipeController extends Controller with MongoController {
 		}
 	}
 	
-	def delete(id: String) = Action { implicit request =>
-		Ok
+	/*
+	 * TODO: move it to another collection and save information about who is the original user is along with it
+	 */
+	def delete() = Action { implicit request =>
+		
+		UserController.recipeManipulateForm.bindFromRequest.fold(
+			formWithErrors => BadRequest("Error deleting a recipe: bad parameter"),
+			value => {
+				Async {
+					//db.blogs.update({id:"001"}, {$push:{comments:{title:"commentX",content:".."}}});
+					val qbUser = QueryBuilder().query(Json.obj("_id" -> value.userId)).makeQueryDocument 
+					val modifier = QueryBuilder().query(Json.obj("$pull" -> Json.obj("myRecipeIds" -> value.recipeId))).makeQueryDocument
+					Logger.debug("deleteFromFavorites")
+					Application.userCollection.update(qbUser, modifier)
+					.map(_ => Redirect(routes.RecipeController.get(value.recipeId))
+							.withSession("user" -> Json.toJson(UserController.getUser("5158fde3b6f1b919c88a93ac")).toString)
+						).recover { case e => 
+						{
+							Logger.debug(e.getMessage)
+							BadRequest(s"Error deleting a recipe: ${e.getMessage}")
+						}
+					}
+				}
+			})
 	}
-
 }

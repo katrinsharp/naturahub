@@ -10,11 +10,12 @@ GET		/recipe/add											controllers.RecipeController.add
 GET		/recipe/:id											controllers.RecipeController.get(id: String)
 GET		/recipe/edit/:id									controllers.RecipeController.edit(id: String)
 POST	/recipe/submitRecipe								controllers.RecipeController.submitRecipe
-GET		/recipe/delete/:id									controllers.RecipeController.delete(id: String)
+POST	/recipe/delete										controllers.RecipeController.delete
 
 #Users
 GET		/user/:id/recipe-book								controllers.UserController.recipeBook(id: String)
 POST	/user/favorites/recipe/save							controllers.UserController.saveToFavorites	
+POST	/user/favorites/recipe/delete						controllers.UserController.deleteFromFavorites
 
 # Map static resources from the /public folder 
 # to the /assets URL path
