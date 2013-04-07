@@ -133,13 +133,13 @@
 						@for(savedRecipe <- savedRecipes) {
 						
 							<div class="one-fourth one-column">
-								<a href="@routes.RecipeController.get(savedRecipe._id)" title="@savedRecipe.name">ff @shortName(savedRecipe.name)</a>
+								<a href="@routes.RecipeController.get(savedRecipe._id)" title="@savedRecipe.name">@shortName(savedRecipe.name)</a>
 							</div>
 							<div class="one-fourth hidden-in-mobile">
 								Public
 							</div>
 							<div class="one-fourth hidden-in-mobile">
-								@org.joda.time.format.ISODateTimeFormat.date().print(savedRecipe.created)
+								@org.joda.time.format.DateTimeFormat.forPattern("dd-MMMM-YYYY").print(savedRecipe.created)
 							</div>	
 							<div class="one-fourth hidden-in-mobile last">
 								Empty
@@ -152,12 +152,12 @@
 					
 					<!-- my tries -->
 					<div class="entry-content cf content-block" id="myTriesBlock">
-						Empty
+						Coming soon
 					</div>
 					
 					<!-- my talks -->
 					<div class="entry-content cf content-block" id="myTalksBlock">
-					    Empty
+					    Coming soon
 					</div>
 
 				</div>
