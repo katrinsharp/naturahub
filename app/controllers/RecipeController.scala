@@ -185,7 +185,7 @@ object RecipeController extends Controller with MongoController {
 		Async {
 			val recipe = getRecipe(id)	
 			val qbAll = QueryBuilder().query(Json.obj())
-			Application.recipeCollection.find[JsValue](qbAll, QueryOpts(batchSizeN=4)).toList.map  { relatedRecipes =>
+			Application.recipeCollection.find[JsValue](qbAll).toList(4).map  { relatedRecipes =>
 				Ok(views.html.recipes.recipe(recipe, relatedRecipes.map(r => r.as[Recipe])))
 			}
 		}
