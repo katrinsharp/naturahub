@@ -11,6 +11,7 @@ import play.api.libs.json._
 import play.api.Play.current
 import models.BlogEntry
 import org.joda.time.DateTime
+import reactivemongo.api.SortOrder.{ Ascending, Descending }
 
 case class BlogCategory(id: String, name: String, numberOfEntries: Int) 
 
@@ -21,7 +22,7 @@ object BlogController extends Controller with MongoController {
 	def summary() = Action { implicit request =>	
 		
 		Async {	
-			val qbAll = QueryBuilder().query(Json.obj())
+			val qbAll = QueryBuilder().query(Json.obj()).sort("created" -> Descending)
 			Application.blogEntriesCollection.find[JsValue](qbAll).toList().map  { entries =>
 				Ok(views.html.blog.summary(entries.map(r => r.as[BlogEntry]), categories))
 			}
@@ -30,7 +31,7 @@ object BlogController extends Controller with MongoController {
 	
 	def category(categoryId: String) = Action { implicit request =>	
 		Async {	
-			val qbAll = QueryBuilder().query(Json.obj("categoryId" -> categoryId))
+			val qbAll = QueryBuilder().query(Json.obj("categoryId" -> categoryId)).sort("created" -> Descending)
 			Application.blogEntriesCollection.find[JsValue](qbAll).toList().map  { entries =>
 				Ok(views.html.blog.summary(entries.map(r => r.as[BlogEntry]), categories))
 			}

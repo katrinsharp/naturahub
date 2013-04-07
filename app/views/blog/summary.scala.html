@@ -14,9 +14,9 @@
 
 				<!-- posts list -->
 				<div id="posts-list" class="cf">
-				
-					@views.html.blog.standard_entry(entries.head)
-
+					@for(entry <- entries) {
+						@views.html.blog.standard_entry(entry)
+					}
 					<!-- Audio -->
 					<article class="format-audio">
 						<div class="box cf">
