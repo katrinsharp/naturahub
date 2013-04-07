@@ -55,7 +55,7 @@
 							<strong>By </strong> @recipe.by
 						</p>
 						<p>
-							<strong>Date </strong> @org.joda.time.format.ISODateTimeFormat.date().print(recipe.created)
+							<strong>Date </strong> @org.joda.time.format.DateTimeFormat.forPattern("dd-MMMM-YYYY").print(recipe.created)
 						</p>
 						
 						@if(isMyRecipe()) {

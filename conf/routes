@@ -12,6 +12,10 @@ GET		/recipe/edit/:id									controllers.RecipeController.edit(id: String)
 POST	/recipe/submitRecipe								controllers.RecipeController.submitRecipe
 POST	/recipe/delete										controllers.RecipeController.delete
 
+# Blog
+GET		/blog/summary										controllers.BlogController.summary()
+GET		/blog/category										controllers.BlogController.category(categoryId: String)
+
 #Users
 GET		/user/:id/recipe-book								controllers.UserController.recipeBook(id: String)
 POST	/user/favorites/recipe/save							controllers.UserController.saveToFavorites	

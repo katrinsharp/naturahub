@@ -17,6 +17,7 @@ object Application extends Controller with MongoController {
 	val db = ReactiveMongoPlugin.db
 	lazy val recipeCollection = db("recipes")
 	lazy val userCollection = db("users")
+	lazy val blogEntriesCollection = db("blog")
 
 	def index = Action { implicit request =>
 

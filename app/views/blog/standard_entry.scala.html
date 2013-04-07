@@ -1,0 +1,42 @@
+@(entry: BlogEntry)(implicit request: RequestHeader)
+
+<!-- Standard -->
+<article class="format-standard">
+	<div class="feature-image">
+		<a href="single.html"> <img src="img/dummies/slides/01.jpg" alt="Alt text" /> </a>
+	</div>
+	<div class="box cf">
+		<div class="entry-date">
+			<div class="number">
+				@entry.created.dayOfMonth().get 
+			</div>
+			<div class="month">
+				@org.joda.time.format.DateTimeFormat.forPattern("MMMM").print(entry.created)
+			</div>
+		</div>
+
+		<div class="excerpt">
+			<a href="single.html" class="post-heading" >@entry.name</a>
+			<p>
+				@{entry.content.substring(100)+"..."}
+			</p>
+
+			<p>
+				<a href="single.html" class="learnmore">Learn More</a>
+			</p>
+		</div>
+
+		<div class="meta">
+			<span class="format">Post</span>
+			<span class="user"><a href="#">By @entry.by </a></span>
+			<span class="comments">16 comments</span>
+			<span class="tags">
+				@for(i <- 0 to entry.tags.length - 1) {
+					<a href="#">@entry.tags(i)</a>@if(i!=entry.tags.length-1){,}
+				}
+			</span>
+		</div>
+
+	</div>
+</article>
+<!-- ENDS  Standard -->

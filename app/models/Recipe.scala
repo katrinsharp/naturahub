@@ -5,6 +5,9 @@ import play.api.libs.functional.syntax._
 import java.util.Date
 import org.joda.time.DateTime
 
+/*
+ * TODO: add userId of who created it?
+ */
 case class Recipe(
 		_id: String, 
 		name: String, 

@@ -100,7 +100,7 @@
 								Public
 							</div>
 							<div class="one-fourth hidden-in-mobile">
-								@org.joda.time.format.ISODateTimeFormat.date().print(myRecipe.created)
+								@org.joda.time.format.DateTimeFormat.forPattern("dd-MMMM-YYYY").print(myRecipe.created)
 							</div>	
 							<div class="one-fourth hidden-in-mobile last">
 								Empty
