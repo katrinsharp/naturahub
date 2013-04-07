@@ -14,7 +14,8 @@ POST	/recipe/delete										controllers.RecipeController.delete
 
 # Blog
 GET		/blog/summary										controllers.BlogController.summary()
-GET		/blog/category										controllers.BlogController.category(categoryId: String)
+GET		/blog/category										controllers.BlogController.byCategory(categoryId: String)
+GET		/blog/archive/year									controllers.BlogController.archiveByYear(year: Int)
 
 #Users
 GET		/user/:id/recipe-book								controllers.UserController.recipeBook(id: String)
