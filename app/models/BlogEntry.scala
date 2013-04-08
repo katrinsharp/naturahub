@@ -16,9 +16,10 @@ case class BlogEntry(
 		by: String,
 		entryType: String,
 		categoryId: String,
+		url: String,
 		tags: Seq[String])
 
-object BlogEntry extends Function8[String, String, String, DateTime, String, String, String, Seq[String], BlogEntry] {
+object BlogEntry extends Function9[String, String, String, DateTime, String, String, String, String, Seq[String], BlogEntry] {
 	implicit val recipeWrites = Json.writes[BlogEntry]
 	implicit val recipeReads = Json.reads[BlogEntry]
 }

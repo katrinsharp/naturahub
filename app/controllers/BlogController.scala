@@ -39,6 +39,15 @@ object BlogController extends Controller with MongoController {
 		}
 	}
 	
+	def byTag(tagName: String) = Action { implicit request =>	
+		Async {	
+			val qbAll = QueryBuilder().query(Json.obj("tags" -> Json.obj("$in" -> Seq(tagName)))).sort("created" -> Descending)
+			Application.blogEntriesCollection.find[JsValue](qbAll).toList().map  { entries =>
+				Ok(views.html.blog.summary(entries.map(r => r.as[BlogEntry]), categories))
+			}
+		}
+	}
+	
 	def archiveByYear(year: Int) = Action { implicit request =>	
 		Async {
 			val start = new DateTime(year, 1, 1, 0, 0)
@@ -50,6 +59,15 @@ object BlogController extends Controller with MongoController {
 							"$lte" -> end.toInstant().getMillis()))).sort("created" -> Descending)
 			Application.blogEntriesCollection.find[JsValue](qbAll).toList().map  { entries =>
 				Ok(views.html.blog.summary(entries.map(r => r.as[BlogEntry]), categories))
+			}
+		}
+	}
+	
+	def get(id: String) = Action { implicit request =>	
+		Async {	
+			val qb = QueryBuilder().query(Json.obj("_id" -> id))
+			Application.blogEntriesCollection.find[JsValue](qb).toList().map  { entries =>
+				Ok(views.html.blog.entry(entries.head.as[BlogEntry], categories))
 			}
 		}
 	}

@@ -1,0 +1,10 @@
+@(entry: BlogEntry, categories: Seq[BlogCategory])(implicit request: RequestHeader)
+
+<!-- Video -->
+<article class="format-video">
+	<div class="video-container">
+		<iframe  src="@entry.url" ></iframe>
+	</div>
+	@views.html.blog.common_part_entry(entry)
+</article>
+<!-- ENDS Video -->
