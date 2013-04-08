@@ -15,11 +15,7 @@
 			<!-- posts list -->
 			<div id="posts-list" class="cf">
 				@for(entry <- entries) {
-					@entry.entryType match {
-						case "Post" => {@views.html.blog.standard_entry(entry, categories)}
-						case "Video" => {@views.html.blog.video_entry(entry, categories)}
-						case _ => {}
-					}
+					@views.html.blog.common_part_entry(entry, true)
 				}
 				
 				<!-- page-navigation -->
