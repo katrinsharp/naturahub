@@ -39,7 +39,7 @@
 
 		<div class="meta">
 			<span class="format">@entry.entryType</span>
-			<span class="user"><a href="#">By @entry.by </a></span>
+			<span class="user"><a href="@routes.BlogController.byUser(entry.by)">By @entry.by </a></span>
 			<span class="comments">16 comments</span>
 			<span class="tags"> @for(i <- 0 to entry.tags.length - 1) { <a href="@routes.BlogController.byTag(entry.tags(i))">@entry.tags(i)</a>@if(i!=entry.tags.length-1){,}
 				} </span>

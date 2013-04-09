@@ -42,8 +42,8 @@ object UserController extends Controller with MongoController {
 			"recipeId" -> nonEmptyText
 			)(recipeSave.apply)(recipeSave.unapply))
 
-	def getUser(id: String): User = {
-		val qb = QueryBuilder().query(Json.obj("_id" -> id))
+	def getUser(propValue: String, propName: String = "_d"): User = {
+		val qb = QueryBuilder().query(Json.obj(propName -> propValue))
 		val future = Application.userCollection.find[JsValue](qb).toList.map(_.head.as[User])				
 		val duration100 = Duration(1000, "millis")
 		val user = Await.result(future, duration100).asInstanceOf[User]

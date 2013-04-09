@@ -9,14 +9,15 @@ case class User(
 		_id: String, 
 		username: String,
 		password: String,
-		name: String, 
-		lastName: String, 
+		nickname: String, 
+		fullName: String, 
 		created: DateTime,
 		myRecipeIds: Seq[String],
-		savedRecipeIds: Seq[String]
+		savedRecipeIds: Seq[String],
+		posts: Seq[String]
 		)
 
-object User extends Function8[String, String, String, String, String, DateTime, Seq[String], Seq[String], User] {
+object User extends Function9[String, String, String, String, String, DateTime, Seq[String], Seq[String], Seq[String], User] {
 	implicit val userWrites = Json.writes[User]
 	implicit val userReads = Json.reads[User]
 }

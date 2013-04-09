@@ -48,6 +48,16 @@ object BlogController extends Controller with MongoController {
 		}
 	}
 	
+	def byUser(userId: String) = Action { implicit request =>	
+		Async {	
+			val user = UserController.getUser(userId, "nickname")
+			val qbAll = QueryBuilder().query(Json.obj("_id" -> Json.obj("$in" -> user.posts))).sort("created" -> Descending)
+			Application.blogEntriesCollection.find[JsValue](qbAll).toList().map  { entries =>
+				Ok(views.html.blog.summary(entries.map(r => r.as[BlogEntry]), categories))
+			}
+		}
+	}
+	
 	def archiveByYear(year: Int) = Action { implicit request =>	
 		Async {
 			val start = new DateTime(year, 1, 1, 0, 0)
