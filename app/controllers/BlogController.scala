@@ -81,4 +81,13 @@ object BlogController extends Controller with MongoController {
 			}
 		}
 	}
+	
+	def getRecentEntries(num: Int) = Action { implicit request =>	
+		Async {	
+			val qb = QueryBuilder().query(Json.obj()).sort("created" -> Descending)
+			Application.blogEntriesCollection.find[JsValue](qb).toList(num).map  { entries =>
+				Ok(views.html.blog.recent_posts(entries.map(r => r.as[BlogEntry])))
+			}
+		}
+	}
 }

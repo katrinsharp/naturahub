@@ -28,4 +28,13 @@ object Application extends Controller with MongoController {
 			}
 		}
 	}
+	
+	def javascriptRoutes = Action {  implicit request =>
+		import routes.javascript._
+    Ok(
+      Routes.javascriptRouter("jsRoutes")(
+      	routes.javascript.BlogController.getRecentEntries
+      )
+    ).as("text/javascript")
+  }
 }

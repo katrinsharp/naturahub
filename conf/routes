@@ -19,13 +19,18 @@ GET		/blog/tag											controllers.BlogController.byTag(tagName: String)
 GET		/blog/user											controllers.BlogController.byUser(userId: String)
 GET		/blog/archive/year									controllers.BlogController.archiveByYear(year: Int)
 GET		/blog/:id											controllers.BlogController.get(id: String)
+GET 	/blog/recent/:num									controllers.BlogController.getRecentEntries(num: Int)
 
 #Users
 GET		/user/:id/recipe-book								controllers.UserController.recipeBook(id: String)
 POST	/user/favorites/recipe/save							controllers.UserController.saveToFavorites	
 POST	/user/favorites/recipe/delete						controllers.UserController.deleteFromFavorites
 
+# Javascript routing
+GET     /assets/javascripts/routes          				controllers.Application.javascriptRoutes
+
 # Map static resources from the /public folder 
 # to the /assets URL path
 GET     /assets/*file               						controllers.Assets.at(path="/public", file)
+GET     /*file												controllers.Assets.at(path="/public", file)
 GET     /webjars/*file              						controllers.WebJarAssets.at(file)

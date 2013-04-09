@@ -6,29 +6,7 @@
 
 		<!-- widgets -->
 		<ul  class="widget-cols cf">
-			<li class="first-col">
-
-				<div class="widget-block">
-					<h4>RECENT POSTS</h4>
-					<div class="recent-post cf">
-						<a href="#" class="thumb"><img src="@routes.Assets.at("img/dummies/54x54.gif")" alt="Post" /></a>
-						<div class="post-head">
-							<a href="#">Pellentesque habitant morbi senectus</a><span> March 12, 2011</span>
-						</div>
-					</div>
-					<div class="recent-post cf">
-						<a href="#" class="thumb"><img src="@routes.Assets.at("img/dummies/54x54.gif")" alt="Post" /></a>
-						<div class="post-head">
-							<a href="#">Pellentesque habitant morbi senectus</a><span> March 12, 2011</span>
-						</div>
-					</div>
-					<div class="recent-post cf">
-						<a href="#" class="thumb"><img src="@routes.Assets.at("img/dummies/54x54.gif")" alt="Post" /></a>
-						<div class="post-head">
-							<a href="#">Pellentesque habitant morbi senectus</a><span> March 12, 2011</span>
-						</div>
-					</div>
-				</div>
+			<li class="first-col" id="recent-posts">
 			</li>
 
 			<li class="second-col">
@@ -88,7 +66,7 @@
 		<!-- bottom -->
 		<div class="footer-bottom">
 			<div class="left">
-				by <a href="http://luiszuno.com" >luiszuno.com</a>
+				&copy;Naturahub 2013
 			</div>
 			<ul id="social-bar" class="cf sb">
 				<li>
@@ -107,3 +85,12 @@
 	</div>
 </footer>
 <!-- ENDS FOOTER -->
+<script>
+	$(function() {
+		jsRoutes.controllers.BlogController.getRecentEntries(3).ajax({
+			type : "GET"
+		}).done(function(data) {
+			$("#recent-posts").append(data);
+		});
+	}); 
+</script>

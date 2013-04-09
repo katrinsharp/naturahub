@@ -1,0 +1,22 @@
+@(entries: Seq[BlogEntry])
+
+<div class="widget-block">
+	<h4>RECENT POSTS</h4>
+	@for(entry <- entries) {
+	<div class="recent-post cf">
+		<a href="@routes.BlogController.get(entry._id)" class="thumb"> 
+			@if(entry.entryType=="Post") { 
+				<div>
+					<img style="height: 54px;width: 54px;" src="@routes.Assets.at(entry.url)" alt="Post" />
+				</div> 
+			} else { 
+				<img src="@routes.Assets.at("img/dummies/54x54.gif")" alt="Post" /> 
+			} 
+		</a>
+		<div class="post-head">
+			<a href="@routes.BlogController.get(entry._id)">@entry.name</a>
+			<span>@org.joda.time.format.DateTimeFormat.forPattern("dd-MMMM-YYYY").print(entry.created)</span>
+		</div>
+	</div>
+	}
+</div>
