@@ -26,13 +26,15 @@
 		</div>
 
 		<div class="excerpt">
-			<a href="@routes.BlogController.get(entry._id)" class="post-heading" >@entry.name</a>
+			@if(isShort){<a href="@routes.BlogController.get(entry.id)" class="post-heading" >@entry.name</a>}else{
+				<span class="post-heading">@entry.name</span>
+			}
 			<p>
 				@if(isShort){@{entry.content.substring(100)+"..."}}else{@entry.content}
 			</p>
 			@if(isShort){
 			<p>
-				<a href="@routes.BlogController.get(entry._id)" class="learnmore">Learn More</a>
+				<a href="@routes.BlogController.get(entry.id)" class="learnmore">Full Post</a>
 			</p>
 			}
 		</div>
@@ -40,7 +42,7 @@
 		<div class="meta">
 			<span class="format">@entry.entryType</span>
 			<span class="user"><a href="@routes.BlogController.byUser(entry.by)">By @entry.by </a></span>
-			<span class="comments">16 comments</span>
+			<span class="comments">@entry.commentsNum Comment@if(entry.commentsNum!=1){s}</span>
 			<span class="tags"> @for(i <- 0 to entry.tags.length - 1) { <a href="@routes.BlogController.byTag(entry.tags(i))">@entry.tags(i)</a>@if(i!=entry.tags.length-1){,}
 				} </span>
 		</div>
