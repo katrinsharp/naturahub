@@ -51,7 +51,7 @@ object BlogController extends Controller with MongoController {
 	def byUser(userId: String) = Action { implicit request =>	
 		Async {	
 			val user = UserController.getUser(userId, "nickname")
-			val qbAll = QueryBuilder().query(Json.obj("_id" -> Json.obj("$in" -> user.posts))).sort("created" -> Descending)
+			val qbAll = QueryBuilder().query(Json.obj("id" -> Json.obj("$in" -> user.posts))).sort("created" -> Descending)
 			Application.blogEntriesCollection.find[JsValue](qbAll).toList().map  { entries =>
 				Ok(views.html.blog.summary(entries.map(r => r.as[BlogEntry]), categories))
 			}
@@ -75,7 +75,7 @@ object BlogController extends Controller with MongoController {
 	
 	def get(id: String) = Action { implicit request =>	
 		Async {	
-			val qb = QueryBuilder().query(Json.obj("_id" -> id))
+			val qb = QueryBuilder().query(Json.obj("id" -> id))
 			Application.blogEntriesCollection.find[JsValue](qb).toList().map  { entries =>
 				Ok(views.html.blog.entry(entries.head.as[BlogEntry], categories))
 			}

@@ -9,7 +9,7 @@ import org.joda.time.DateTime
  * TODO: handle the comments
  */
 case class BlogEntry(
-		_id: String, 
+		id: String, 
 		name: String, 
 		content: String,
 		created: DateTime, 

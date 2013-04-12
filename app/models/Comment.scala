@@ -6,7 +6,7 @@ import java.util.Date
 import org.joda.time.DateTime
 
 case class Comment(
-		_id: String,
+		id: String,
 		postId: String,
 		content: String,
 		created: DateTime, 

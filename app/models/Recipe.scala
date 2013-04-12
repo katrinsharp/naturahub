@@ -9,7 +9,7 @@ import org.joda.time.DateTime
  * TODO: add userId of who created it?
  */
 case class Recipe(
-		_id: String, 
+		id: String, 
 		name: String, 
 		shortDesc: String, 
 		created: DateTime, 

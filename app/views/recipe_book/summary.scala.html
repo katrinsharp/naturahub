@@ -45,6 +45,9 @@
 							<li>
 								<span class="summary-menu-item summary-current">
 									<a href="" class="launch2 menu-item" id="myRecipes">My Recipes</a>
+									<ul>
+										<li><a href="@routes.RecipeController.add()"> - Add Recipe</a></li>
+									</ul>
 								</span>
 							</li>
 							<li>
@@ -69,7 +72,6 @@
 
 					<!-- my recipes -->
 					<div class="entry-content cf content-block" id="myRecipesBlock">
-					
 						<!-- head -->
 						<div class="one-fourth hidden-in-mobile">
 							<strong>Name</strong>
@@ -89,12 +91,12 @@
 						@for(myRecipe <- myRecipes) {
 						
 							<!--div class="one-fourth thumb">
-								<a href="@routes.RecipeController.get(myRecipe._id)" >
+								<a href="@routes.RecipeController.get(myRecipe.id)" >
 									<img src="@routes.Assets.at("img/tmp/"+myRecipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).key)")" alt="Alt text" />
 								</a>
 							</div-->
 							<div class="one-fourth one-column">
-								<a href="@routes.RecipeController.get(myRecipe._id)" title="@myRecipe.name">@shortName(myRecipe.name)</a>
+								<a href="@routes.RecipeController.get(myRecipe.id)" title="@myRecipe.name">@shortName(myRecipe.name)</a>
 							</div>
 							<div class="one-fourth hidden-in-mobile">
 								Public
@@ -105,8 +107,7 @@
 							<div class="one-fourth hidden-in-mobile last">
 								Empty
 							</div>
-							<div class="clearfix"></div>
-							
+							<div class="clearfix"></div>		
 						}
 					</div>
 					<!-- ENDS my recipes -->
@@ -133,7 +134,7 @@
 						@for(savedRecipe <- savedRecipes) {
 						
 							<div class="one-fourth one-column">
-								<a href="@routes.RecipeController.get(savedRecipe._id)" title="@savedRecipe.name">@shortName(savedRecipe.name)</a>
+								<a href="@routes.RecipeController.get(savedRecipe.id)" title="@savedRecipe.name">@shortName(savedRecipe.name)</a>
 							</div>
 							<div class="one-fourth hidden-in-mobile">
 								Public

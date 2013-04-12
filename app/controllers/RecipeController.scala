@@ -30,6 +30,7 @@ import play.api.data.FormError
 import models.S3PhotoMetadata
 import models.RecipePhase
 import org.joda.time.DateTime
+import utils.UniqueCode
 
 //https://github.com/sgodbillon/reactivemongo-demo-app/blob/master/app/controllers/Application.scala
 
@@ -71,13 +72,13 @@ object RecipeController extends Controller with MongoController {
 		recipeForm.bindFromRequest.fold(
 			formWithErrors => {BadRequest(views.html.recipes.recipe_form(formWithErrors))},
 			value => {
-				val id = value.recipe._id match {
-							case "-1" => BSONObjectID.generate.stringify
+				val id = value.recipe.id match {
+							case "-1" => UniqueCode.getRandomCode
 							case v => v
 						}
 				AsyncResult {
 					
-					val newRecipe = (id != value.recipe._id)
+					val newRecipe = (id != value.recipe.id)
 					
 					var photos = List[S3Photo]()
 					var originalPhotos = List[S3Photo]()
@@ -110,11 +111,11 @@ object RecipeController extends Controller with MongoController {
 						files(i).files.map { file =>
 							if(file.ref.file.length() != 0) {
 								Logger.debug("next file")
-								val original = S3Photo(S3Blob.s3Bucket, Image.saveAsIs(file.ref.file), S3PhotoMetadata("", "original", "", DateTime.now()))
+								val original = S3Photo(S3Blob.s3Bucket, Image.saveAsIs(file.ref.file), S3PhotoMetadata("original", "", DateTime.now()))
 								photos = photos :+ original
-								photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsSlider(file.ref.file), S3PhotoMetadata("", "slider", original.key, DateTime.now()))
+								photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsSlider(file.ref.file), S3PhotoMetadata("slider", original.key, DateTime.now()))
 								if(!isPreviewSet) {
-									photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsPreview(file.ref.file), S3PhotoMetadata("", "preview", original.key, DateTime.now()))
+									photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsPreview(file.ref.file), S3PhotoMetadata("preview", original.key, DateTime.now()))
 									isPreviewSet = true
 								} 
 							}
@@ -127,9 +128,9 @@ object RecipeController extends Controller with MongoController {
 								originalPhotos.filter(_.metadata.typeOf == "slider")
 								)))
 						case _ => {
-							val selector = QueryBuilder().query(Json.obj("_id" -> value.recipe._id)).makeQueryDocument
+							val selector = QueryBuilder().query(Json.obj("id" -> value.recipe.id)).makeQueryDocument
 							val modifier = QueryBuilder().query(Json.obj(
-								"_id" -> id,
+								"id" -> id,
 								"name" -> value.recipe.name,
 								"shortDesc" -> value.recipe.shortDesc.trim(),
 								"created" -> value.recipe.created,
@@ -173,7 +174,7 @@ object RecipeController extends Controller with MongoController {
 	}
 	
 	private def getRecipe(id: String): Recipe = {
-		val qb = QueryBuilder().query(Json.obj("_id" -> id))
+		val qb = QueryBuilder().query(Json.obj("id" -> id))
 		val futureRecipe = Application.recipeCollection.find[JsValue](qb).toList.map(_.head.as[Recipe])				
 		val duration100 = Duration(1000, "millis")
 		val recipe = Await.result(futureRecipe, duration100).asInstanceOf[Recipe]
@@ -197,7 +198,7 @@ object RecipeController extends Controller with MongoController {
 	
 	def edit(id: String) = Action { implicit request =>
 		Async {
-			val qb = QueryBuilder().query(Json.obj("_id" -> id))
+			val qb = QueryBuilder().query(Json.obj("id" -> id))
 			Application.recipeCollection.find[JsValue](qb).toList.map { recipes =>
 				val recipe = recipes.head.as[Recipe]
 				Ok(views.html.recipes.recipe_form(recipeForm.fill(RecipeSubmit(recipe)), recipe.photos.filter(_.metadata.typeOf == "slider")))
@@ -214,12 +215,10 @@ object RecipeController extends Controller with MongoController {
 			formWithErrors => BadRequest("Error deleting a recipe: bad parameter"),
 			value => {
 				Async {
-					//db.blogs.update({id:"001"}, {$push:{comments:{title:"commentX",content:".."}}});
-					val qbUser = QueryBuilder().query(Json.obj("_id" -> value.userId)).makeQueryDocument 
+					val qbUser = QueryBuilder().query(Json.obj("id" -> value.userId)).makeQueryDocument 
 					val modifier = QueryBuilder().query(Json.obj("$pull" -> Json.obj("myRecipeIds" -> value.recipeId))).makeQueryDocument
-					Logger.debug("deleteFromFavorites")
 					Application.userCollection.update(qbUser, modifier)
-					.map(_ => Redirect(routes.RecipeController.get(value.recipeId))
+					.map(_ => Redirect(routes.UserController.recipeBook("5158fde3b6f1b919c88a93ac"))
 							.withSession("user" -> Json.toJson(UserController.getUser("5158fde3b6f1b919c88a93ac")).toString)
 						).recover { case e => 
 						{

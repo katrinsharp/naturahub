@@ -253,9 +253,11 @@ jQuery(document).ready(function($) {
 	//##########################################
 	
 	$("#comboNav-recipe-summary").change(function() {
-	$(".content-block").addClass("visuallyHide");
-	$("#"+$(this).children("option:selected").attr("id")+"Block").removeClass("visuallyHide");
-	 
+		if($(this).val()!="") {
+			document.location.href = $(this).val(); 
+		}
+		$(".content-block").addClass("visuallyHide");
+		$("#"+$(this).children("option:selected").attr("id")+"Block").removeClass("visuallyHide");
 	});
 	
 	

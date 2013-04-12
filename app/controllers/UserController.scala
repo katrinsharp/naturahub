@@ -42,7 +42,7 @@ object UserController extends Controller with MongoController {
 			"recipeId" -> nonEmptyText
 			)(recipeSave.apply)(recipeSave.unapply))
 
-	def getUser(propValue: String, propName: String = "_id"): User = {
+	def getUser(propValue: String, propName: String = "id"): User = {
 		val qb = QueryBuilder().query(Json.obj(propName -> propValue))
 		val future = Application.userCollection.find[JsValue](qb).toList.map(_.head.as[User])				
 		val duration1000 = Duration(1000, "millis")
@@ -60,10 +60,10 @@ object UserController extends Controller with MongoController {
 		Async {
 			val user = getUser(id)	
 			val allNeededRecipes = user.myRecipeIds ++ user.savedRecipeIds
-			val qbAll = QueryBuilder().query(Json.obj("_id" -> Json.obj("$in" -> allNeededRecipes)))
+			val qbAll = QueryBuilder().query(Json.obj("id" -> Json.obj("$in" -> allNeededRecipes)))
 			Application.recipeCollection.find[JsValue](qbAll).toList.map  { resultedRecipes =>	
-				//val myRecipes = resultedRecipes.filter(p => user.myRecipeIds.exists(p._id))
-				val partitionedRecipes = resultedRecipes.map(r => r.as[Recipe]).partition(p => user.myRecipeIds.exists(_ == p._id))
+				//val myRecipes = resultedRecipes.filter(p => user.myRecipeIds.exists(p.id))
+				val partitionedRecipes = resultedRecipes.map(r => r.as[Recipe]).partition(p => user.myRecipeIds.exists(_ == p.id))
 				Ok(views.html.recipe_book.summary(partitionedRecipes._1, partitionedRecipes._2))
 			}
 		}
@@ -76,7 +76,7 @@ object UserController extends Controller with MongoController {
 			value => {
 				Async {
 					//db.blogs.update({id:"001"}, {$push:{comments:{title:"commentX",content:".."}}});
-					val qbUser = QueryBuilder().query(Json.obj("_id" -> value.userId)).makeQueryDocument 
+					val qbUser = QueryBuilder().query(Json.obj("id" -> value.userId)).makeQueryDocument 
 					val modifier = QueryBuilder().query(Json.obj("$push" -> Json.obj("savedRecipeIds" -> value.recipeId))).makeQueryDocument
 					Application.userCollection.update(qbUser, modifier)
 					.map(_ => Redirect(routes.RecipeController.get(value.recipeId))
@@ -98,7 +98,7 @@ object UserController extends Controller with MongoController {
 			value => {
 				Async {
 					//db.blogs.update({id:"001"}, {$push:{comments:{title:"commentX",content:".."}}});
-					val qbUser = QueryBuilder().query(Json.obj("_id" -> value.userId)).makeQueryDocument 
+					val qbUser = QueryBuilder().query(Json.obj("id" -> value.userId)).makeQueryDocument 
 					val modifier = QueryBuilder().query(Json.obj("$pull" -> Json.obj("savedRecipeIds" -> value.recipeId))).makeQueryDocument
 					Logger.debug("deleteFromFavorites")
 					Application.userCollection.update(qbUser, modifier)

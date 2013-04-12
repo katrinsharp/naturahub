@@ -6,7 +6,7 @@ import java.util.Date
 import org.joda.time.DateTime
 
 case class User(
-		_id: String, 
+		id: String, 
 		username: String,
 		password: String,
 		nickname: String, 
