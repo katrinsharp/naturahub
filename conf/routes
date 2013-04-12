@@ -21,6 +21,9 @@ GET		/blog/archive/year									controllers.BlogController.archiveByYear(year: I
 GET		/blog/:id											controllers.BlogController.get(id: String)
 GET 	/blog/recent/:num									controllers.BlogController.getRecentEntries(num: Int)
 
+# Comments
+GET		/comment/:postId									controllers.CommentController.getByPostId(postId: String)
+
 #Users
 GET		/user/:id/recipe-book								controllers.UserController.recipeBook(id: String)
 POST	/user/favorites/recipe/save							controllers.UserController.saveToFavorites	

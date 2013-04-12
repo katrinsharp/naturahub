@@ -18,6 +18,7 @@ object Application extends Controller with MongoController {
 	lazy val recipeCollection = db("recipes")
 	lazy val userCollection = db("users")
 	lazy val blogEntriesCollection = db("blog")
+	lazy val commentsCollection = db("comments")
 
 	def index = Action { implicit request =>
 
@@ -33,7 +34,8 @@ object Application extends Controller with MongoController {
 		import routes.javascript._
     Ok(
       Routes.javascriptRouter("jsRoutes")(
-      	routes.javascript.BlogController.getRecentEntries
+      	routes.javascript.BlogController.getRecentEntries,
+      	routes.javascript.CommentController.getByPostId
       )
     ).as("text/javascript")
   }
