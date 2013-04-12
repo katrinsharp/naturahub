@@ -14,13 +14,17 @@ import org.joda.time.DateTime
 import reactivemongo.api.SortOrder.{ Ascending, Descending }
 import org.joda.time.Interval
 import models.Comment
+import scala.util.matching.Regex
 
 
 object CommentController extends Controller with MongoController {
 	
 	def getByPostId(id: String) = Action { implicit request =>
 		Async {	
-			val qb = QueryBuilder().query(Json.obj("postId" -> id))
+			//val qb = QueryBuilder().query(Json.obj("postId" -> id))
+			val qb = QueryBuilder().query(
+					Json.obj("slug" -> Json.obj("$regex" -> (new Regex(s"^$id\\/*")).toString())))
+					.sort("created" -> Descending)
 			Application.commentsCollection.find[JsValue](qb).toList().map  { comments =>
 				Ok(views.html.comments.comments(comments.map(r => r.as[Comment])))
 			}

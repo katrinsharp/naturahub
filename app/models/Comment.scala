@@ -11,9 +11,9 @@ case class Comment(
 		content: String,
 		created: DateTime, 
 		by: String,
-		replies: Seq[String])
+		slug: String)
 
-object Comment extends Function6[String, String, String, DateTime, String, Seq[String], Comment] {
+object Comment extends Function6[String, String, String, DateTime, String, String, Comment] {
 	implicit val writes = Json.writes[Comment]
 	implicit val reads = Json.reads[Comment]
 }
