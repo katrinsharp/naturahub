@@ -86,7 +86,10 @@ object RecipeController extends Controller with MongoController {
 					
 					if(!newRecipe) {
 						val recipe = getRecipe(id)
-						photos = photos ++ recipe.photos
+						recipe match {
+							case Some(r) => photos = photos ++ r.photos
+							case _ =>
+						}
 						originalPhotos = photos
 					}
 					
@@ -173,21 +176,30 @@ object RecipeController extends Controller with MongoController {
 		)
 	}
 	
-	private def getRecipe(id: String): Recipe = {
+	private def getRecipe(id: String): Option[Recipe] = {
 		val qb = QueryBuilder().query(Json.obj("id" -> id))
-		val futureRecipe = Application.recipeCollection.find[JsValue](qb).toList.map(_.head.as[Recipe])				
-		val duration100 = Duration(1000, "millis")
-		val recipe = Await.result(futureRecipe, duration100).asInstanceOf[Recipe]
+		val futureRecipe = Application.recipeCollection.find[JsValue](qb).toList.map(
+				_.headOption match {
+					case Some(h) => Some(h.as[Recipe])
+					case _ => None
+				})				
+		val duration10000 = Duration(100000, "millis")
+		val recipe = Await.result(futureRecipe, duration10000).asInstanceOf[Option[Recipe]]
 		recipe
 	}
 		
 
 	def get(id: String) = Action { implicit request =>
 		Async {
-			val recipe = getRecipe(id)	
-			val qbAll = QueryBuilder().query(Json.obj())
-			Application.recipeCollection.find[JsValue](qbAll).toList(4).map  { relatedRecipes =>
-				Ok(views.html.recipes.recipe(recipe, relatedRecipes.map(r => r.as[Recipe])))
+			val oRecipe = getRecipe(id)	
+			oRecipe match {
+				case Some(recipe) => {
+					val qbAll = QueryBuilder().query(Json.obj())
+					Application.recipeCollection.find[JsValue](qbAll).toList(4).map  { relatedRecipes =>
+						Ok(views.html.recipes.recipe(recipe, relatedRecipes.map(r => r.as[Recipe])))
+					}
+				}
+				case _ => Future(BadRequest(s"Recipe $id was not found"))
 			}
 		}
 	}

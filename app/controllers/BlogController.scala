@@ -13,6 +13,7 @@ import models.BlogEntry
 import org.joda.time.DateTime
 import reactivemongo.api.SortOrder.{ Ascending, Descending }
 import org.joda.time.Interval
+import scala.concurrent.Future
 
 case class BlogCategory(id: String, name: String, numberOfEntries: Int) 
 
@@ -50,10 +51,16 @@ object BlogController extends Controller with MongoController {
 	
 	def byUser(userId: String) = Action { implicit request =>	
 		Async {	
-			val user = UserController.getUser(userId, "nickname")
-			val qbAll = QueryBuilder().query(Json.obj("id" -> Json.obj("$in" -> user.posts))).sort("created" -> Descending)
-			Application.blogEntriesCollection.find[JsValue](qbAll).toList().map  { entries =>
-				Ok(views.html.blog.summary(entries.map(r => r.as[BlogEntry]), categories))
+			val oUser = UserController.getUser(userId, "nickname")
+			
+			oUser match {
+				case Some(user) => {
+					val qbAll = QueryBuilder().query(Json.obj("id" -> Json.obj("$in" -> user.posts))).sort("created" -> Descending)
+					Application.blogEntriesCollection.find[JsValue](qbAll).toList().map  { entries =>
+						Ok(views.html.blog.summary(entries.map(r => r.as[BlogEntry]), categories))
+					}
+				}
+				case _ => Future(BadRequest(s"User $userId was not found"))
 			}
 		}
 	}
