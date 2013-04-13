@@ -13,11 +13,17 @@
 }
 
 @isSaved() = @{
-	Json.fromJson[User](Json.parse(session.get("user").get)).get.savedRecipeIds.find(_ == recipe._id) != None
+	session.get("user") match {
+		case None => false
+		case Some(u) => Json.fromJson[User](Json.parse(u)).get.savedRecipeIds.find(_ == recipe.id) != None 
+	}
 }
 
 @isMyRecipe() = @{
-	Json.fromJson[User](Json.parse(session.get("user").get)).get.myRecipeIds.find(_ == recipe._id) != None
+	session.get("user") match {
+		case None => false
+		case Some(u) => Json.fromJson[User](Json.parse(u)).get.myRecipeIds.find(_ == recipe.id) != None 
+	}
 }
 
 @main("NaturaHub") {
@@ -60,13 +66,13 @@
 						
 						@if(isMyRecipe()) {
 							<p>
-								<a href="@routes.RecipeController.edit(recipe._id)" class="launch" >Edit Recipe</a>
+								<a href="@routes.RecipeController.edit(recipe.id)" class="launch" >Edit Recipe</a>
 							</p>
 							<p>
 							
 								@helper.form(action = routes.RecipeController.delete, 'id -> "deleteRecipeForm") {
 									<input type="hidden" value="5158fde3b6f1b919c88a93ac" name="userId"/>
-									<input type="hidden" value="@recipe._id" name="recipeId"/>
+									<input type="hidden" value="@recipe.id" name="recipeId"/>
 									<a href="" class="launch submitForm">Delete Recipe</a>
 								}
 							</p>
@@ -76,13 +82,13 @@
 							@if(isSaved()) {
 								@helper.form(action = routes.UserController.deleteFromFavorites, 'id -> "deleteFromFavoritesForm") {
 									<input type="hidden" value="5158fde3b6f1b919c88a93ac" name="userId"/>
-									<input type="hidden" value="@recipe._id" name="recipeId"/>
+									<input type="hidden" value="@recipe.id" name="recipeId"/>
 									<a href="" class="launch submitForm">Delete from Favorites</a>
 								}
 							}else {
 								@helper.form(action = routes.UserController.saveToFavorites, 'id -> "saveToFavoritesForm") {
 									<input type="hidden" value="5158fde3b6f1b919c88a93ac" name="userId"/>
-									<input type="hidden" value="@recipe._id" name="recipeId"/>
+									<input type="hidden" value="@recipe.id" name="recipeId"/>
 									<a href="" class="launch submitForm">Save to Favorites</a>
 								}
 							}
@@ -138,8 +144,8 @@
 					<div class="related-list cf">
 						@for(relatedRecipe <- relatedRecipes) {
 							<figure>
-								<a href="@routes.RecipeController.get(relatedRecipe._id)" class="thumb"><img src="@routes.Assets.at("img/tmp/"+relatedRecipe.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).key)")" alt="Alt text" /></a>
-								<a href="@routes.RecipeController.get(relatedRecipe._id)" class="heading">@relatedRecipe.name</a>
+								<a href="@routes.RecipeController.get(relatedRecipe.id)" class="thumb"><img src="@routes.Assets.at("img/tmp/"+relatedRecipe.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).key)")" alt="Alt text" /></a>
+								<a href="@routes.RecipeController.get(relatedRecipe.id)" class="heading">@relatedRecipe.name</a>
 							</figure>
 						}
 					</div>

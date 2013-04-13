@@ -78,7 +78,7 @@
 </body>
 <script>
 	$(function() {
-		jsRoutes.controllers.CommentController.getByPostId("@entry._id").ajax({
+		jsRoutes.controllers.CommentController.getByPostId("@entry.id").ajax({
 			type : "GET"
 		}).done(function(data) {
 			$("#comments-wrap").append(data);
