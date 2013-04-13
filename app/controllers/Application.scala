@@ -21,7 +21,7 @@ object Application extends Controller with MongoController {
 	lazy val commentsCollection = db("comments")
 
 	def index = Action { implicit request =>
-
+		Logger.info("mongodb.uri: "+Play.current.configuration.getString("mongodb.uri").getOrElse(""))
 		Async {
 			val qb = QueryBuilder().query(Json.obj())
 			Application.recipeCollection.find[JsValue](qb).toList.map { recipes =>
