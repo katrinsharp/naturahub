@@ -55,11 +55,10 @@ class S3Photo(
     	
     	Application.useLocalStorage match {
     		case true => {
-    			val name = DateTime.now().getMillis() + ".jpg"
     					ImageIO.write(
     					image,
     					"jpg",
-    					new File("C:\\base\\source\\naturahub\\public\\img\\tmp\\" + name))
+    					new File("C:\\base\\source\\naturahub\\public\\img\\tmp\\" + key))
     		}
     		case false => {
     			val objectMetadata = new ObjectMetadata()
