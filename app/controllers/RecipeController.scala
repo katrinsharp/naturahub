@@ -114,11 +114,11 @@ object RecipeController extends Controller with MongoController {
 						files(i).files.map { file =>
 							if(file.ref.file.length() != 0) {
 								Logger.debug("next file")
-								val original = S3Photo(S3Blob.s3Bucket, Image.saveAsIs(file.ref.file), S3PhotoMetadata("original", "", DateTime.now()))
-								photos = photos :+ original
-								photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsSlider(file.ref.file), S3PhotoMetadata("slider", original.key, DateTime.now()))
+								val original = S3Photo.save(Image.asIs(file.ref.file), "original", "")
+								photos = photos :+ original 
+								photos = photos :+ S3Photo.save(Image.asSlider(file.ref.file), "slider", original.key)
 								if(!isPreviewSet) {
-									photos = photos :+ S3Photo(S3Blob.s3Bucket, Image.saveAsPreview(file.ref.file), S3PhotoMetadata("preview", original.key, DateTime.now()))
+									photos = photos :+ S3Photo.save(Image.asPreview(file.ref.file), "preview", original.key)
 									isPreviewSet = true
 								} 
 							}

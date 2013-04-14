@@ -47,7 +47,7 @@
 								@for(photo <- recipe.photos){
 									@if(photo.metadata.typeOf == "slider") {
 										<li>
-											<img src="@routes.Assets.at("img/tmp/"+photo.key)" alt="alt text" />
+											<img src="@photo.getFullUrl" alt="alt text" />
 										</li>	
 									}
 								}
@@ -144,7 +144,7 @@
 					<div class="related-list cf">
 						@for(relatedRecipe <- relatedRecipes) {
 							<figure>
-								<a href="@routes.RecipeController.get(relatedRecipe.id)" class="thumb"><img src="@routes.Assets.at("img/tmp/"+relatedRecipe.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).key)")" alt="Alt text" /></a>
+								<a href="@routes.RecipeController.get(relatedRecipe.id)" class="thumb"><img src="@relatedRecipe.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).getFullUrl" alt="Alt text" /></a>
 								<a href="@routes.RecipeController.get(relatedRecipe.id)" class="heading">@relatedRecipe.name</a>
 							</figure>
 						}

@@ -19,6 +19,8 @@ object Application extends Controller with MongoController {
 	lazy val userCollection = db("users")
 	lazy val blogEntriesCollection = db("blog")
 	lazy val commentsCollection = db("comments")
+	
+	val useLocalStorage = Play.application.configuration.getString("save.to").getOrElse("").equalsIgnoreCase("local")
 
 	def index = Action { implicit request =>
 		Logger.info("mongodb.uri: "+Play.current.configuration.getString("mongodb.uri").getOrElse(""))

@@ -32,7 +32,7 @@
 					
 					@for(recipe <- recipes) {
 						<figure class="@recipe.level">
-							<a href="@routes.RecipeController.get(recipe.id)" class="thumb"><img src="@routes.Assets.at("img/tmp/"+recipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).key)" alt="alt" /></a>
+							<a href="@routes.RecipeController.get(recipe.id)" class="thumb"><img src="@recipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).getFullUrl" alt="alt" /></a>
 							<figcaption>
 								<a href="@routes.RecipeController.get(recipe.id)"><h3 class="heading">@recipe.name</h3></a>
 								@recipe.shortDesc

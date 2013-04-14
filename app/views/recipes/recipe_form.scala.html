@@ -39,7 +39,7 @@
 @atOrEmpty(i: Int, photos: Seq[S3Photo]) = {
 	
 	@if(photos.length > i) {
-		@routes.Assets.at("img/tmp/"+photos(i).key)
+		@photos(i).getFullUrl
 	} else {
 		http://www.placehold.it/200x80/EFEFEF/AAAAAA&text=no+image
 	}	
@@ -146,7 +146,7 @@
 										<img src="http://www.placehold.it/200x80/EFEFEF/AAAAAA&text=no+image" />
 									</div>	
 									<div class="fileupload-preview fileupload-exists thumbnail" style="width: 200px; height: 80px;">
-										<img src="@routes.Assets.at("img/tmp/"+photos(i).key)" />
+										<img src="@photos(i).getFullUrl" />
 									</div>	
 									<div>
 										<span class="btn btn-file">

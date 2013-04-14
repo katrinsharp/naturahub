@@ -56,7 +56,7 @@
 					
 					@for(recipe <- recipes) {
 						<li>
-							<img src="@routes.Assets.at("img/tmp/"+recipe.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).key)")" title="" alt="alt" />
+							<img src="@recipe.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).getFullUrl" title="" alt="alt" />
 							<div class="slider-description">
 								<h4>@recipe.name</h4>
 								<p>
@@ -76,7 +76,7 @@
 					<ul class="navigator-wrap-inner">
 						@for(recipe <- recipes) {
 							<li>
-								<img src="@routes.Assets.at("img/tmp/"+recipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).key)")" title="" alt="alt" />
+								<img src="@recipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).getFullUrl" title="" alt="alt" />
 							</li>
 						}
 					</ul>

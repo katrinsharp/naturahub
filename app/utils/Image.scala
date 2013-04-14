@@ -6,43 +6,35 @@ import org.imgscalr.Scalr
 import java.awt.image.BufferedImage
 import play.api.Logger
 import org.joda.time.DateTime
+import java.io.ByteArrayOutputStream
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 
 object Image {
 	
 	val RECIPE_SLIDER_SIZE = (940, 367)
 	val RECIPE_PREVIEW_WIDTH = 300
 	
-	def saveAsSlider(inputFile: File): String = {
+	def asSlider(inputFile: File): BufferedImage = {
 		//resizeAndSave(inputFile, RECIPE_SLIDER_SIZE._1, RECIPE_SLIDER_SIZE._2)
 		val originalImage = ImageIO.read(inputFile)
 		val scaledImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, RECIPE_SLIDER_SIZE._1)
 		val scaledImage2 = Scalr.crop(scaledImage, 0, (scaledImage.getHeight() - RECIPE_SLIDER_SIZE._2)/2 toInt, RECIPE_SLIDER_SIZE._1, RECIPE_SLIDER_SIZE._2, null)
-		save(scaledImage2)
-		
+		scaledImage2
 	}
 	
-	def saveAsPreview(inputFile: File): String = {
+	def asPreview(inputFile: File): BufferedImage = {
 		val originalImage = ImageIO.read(inputFile)
 		val scaledImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, RECIPE_PREVIEW_WIDTH)
-		save(scaledImage)
+		scaledImage
 	}
 	
-	def saveAsIs(inputFile: File): String = {
+	def asIs(inputFile: File): BufferedImage = {
 		val originalImage = ImageIO.read(inputFile)
-		save(originalImage)
+		originalImage
 	}
 	
-	def save(image: BufferedImage): String = {
-		val name = DateTime.now().getMillis() + ".jpg"
-		ImageIO.write(
-			image,
-			"jpg",
-			new File("C:\\base\\source\\naturahub\\public\\img\\tmp\\" + name))
-		Logger.debug("************* "+name)
-		name	
-	}
-	
-	def resizeAndSave(inputFile: File, width: Int, height: Int): String = {
+	private def resizeAndSave(inputFile: File, width: Int, height: Int): BufferedImage = {
 		
 		val ratio = width*1.0/height
 		val originalImage = ImageIO.read(inputFile)
@@ -97,7 +89,7 @@ object Image {
 		
 		Logger.debug(s"cropW: $cropW, cropH; $cropH")
 
-		save(scaledImage)	
+		scaledImage
 	}
 
 }

@@ -90,11 +90,6 @@
 					
 						@for(myRecipe <- myRecipes) {
 						
-							<!--div class="one-fourth thumb">
-								<a href="@routes.RecipeController.get(myRecipe.id)" >
-									<img src="@routes.Assets.at("img/tmp/"+myRecipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).key)")" alt="Alt text" />
-								</a>
-							</div-->
 							<div class="one-fourth one-column">
 								<a href="@routes.RecipeController.get(myRecipe.id)" title="@myRecipe.name">@shortName(myRecipe.name)</a>
 							</div>
