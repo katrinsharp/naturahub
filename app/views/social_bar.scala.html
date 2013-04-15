@@ -11,7 +11,7 @@
 			<a href="#" title="Tweet this page" class="twitter" id="tw-custom"></a>
 		</li>
 		<li>
-			<a href="http://plus.google.com" title="Enter my circles" class="plus"></a>
+			<a href="http://plus.google.com" title="Enter my circles" class="plus" id="goog-custom"></a>
 		</li>
 	</ul>
 </div>
@@ -49,9 +49,24 @@
 		return false;
 	}
 	
+	//won't work as long as site is not accessable
+	function bindtoGoogClick(e) {
+		e.preventDefault();
+		url=location.href;
+		title=document.title;
+		var width  = 575,
+        height = 400,
+        left   = ($(window).width()  - width)  / 2,
+        top    = ($(window).height() - height) / 2;
+		window.open("https://plusone.google.com/share?url="+encodeURIComponent(url)+"&title="+encodeURIComponent(title),
+		"","scrollbars=no,width="+width+",height="+height+",left="+left+",top"+top);	
+		return false;
+	}
+	
 	$(function() {
 		$('#fb-custom').bind('click', bindtoFbClick);
 		$('#tw-custom').bind('click', bindtoTwClick);
+		$('#goog-custom').bind('click', bindtoGoogClick);
 	});
 </script>
 
