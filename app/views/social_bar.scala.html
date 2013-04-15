@@ -8,7 +8,7 @@
 			<div class="fb-like" style="display: none" data-layout="button_count" data-href="http://www.naturalcosmeticsrecipes.com" data-send="true" data-width="450" data-show-faces="true"></div>
 		</li>
 		<li>
-			<a href="http://www.twitter.com" title="Follow my tweets" class="twitter"></a>
+			<a href="#" title="Tweet this page" class="twitter" id="tw-custom"></a>
 		</li>
 		<li>
 			<a href="http://plus.google.com" title="Enter my circles" class="plus"></a>
@@ -22,12 +22,36 @@
 		e.preventDefault();
 		url=location.href;
 		title=document.title;
-		window.open("http://www.facebook.com/plugins/like.php?href="+encodeURIComponent(url)+"&amp;t="+encodeURIComponent(title)+"&amp;send=false&amp;layout=standard&amp;width=400&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=arial&amp;height=35","sharer","toolbar=0,status=0,width=626,height=436");	
+		var width  = 575,
+        height = 400,
+        left   = ($(window).width()  - width)  / 2,
+        top    = ($(window).height() - height) / 2;
+		window.open("http://www.facebook.com/plugins/like.php?href="+encodeURIComponent(url)+"&amp;t="+encodeURIComponent(title)+"&amp;send=false&amp;layout=standard&amp;width=400&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=arial&amp;height=35",
+		"sharer","toolbar=0,status=0,width="+width+",height="+height+",left="+left+",top"+top);	
+		return false;
+	}
+	
+	function bindtoTwClick(e) {
+		e.preventDefault();
+		url=location.href;
+		title=document.title;
+		var width  = 575,
+        height = 400,
+        left   = ($(window).width()  - width)  / 2,
+        top    = ($(window).height() - height) / 2,
+        opts   = 'status=1' +
+                 ',width='  + width  +
+                 ',height=' + height +
+                 ',top='    + top    +
+                 ',left='   + left;
+    
+		window.open("http://twitter.com/share?text="+encodeURIComponent("Check it out: ")+encodeURIComponent(url), "twitter", opts);	
 		return false;
 	}
 	
 	$(function() {
 		$('#fb-custom').bind('click', bindtoFbClick);
+		$('#tw-custom').bind('click', bindtoTwClick);
 	});
 </script>
 
