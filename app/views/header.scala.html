@@ -101,8 +101,17 @@
 	</div>
 
 	<script>
+		function bindtoFbClick(e) {
+			e.preventDefault();
+			url=location.href;
+			title=document.title;
+			window.open("http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.naturalcosmeticsrecipes.com%2F&amp;send=false&amp;layout=standard&amp;width=400&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=arial&amp;height=35","sharer","toolbar=0,status=0,width=626,height=436");	
+			return false;
+		}
+
 		$(function() {
 			$('#nav > #@currentMenu').addClass("current-menu-item");
+			$('#fb-custom').bind('click', bindtoFbClick);
 		});
 	</script>
 
