@@ -1,4 +1,4 @@
-@(title: String, recipes: Seq[Recipe] = Seq())(content: Html)(implicit request: RequestHeader)
+@(currentMenu: String, recipes: Seq[Recipe] = Seq())(content: Html)(implicit request: RequestHeader)
 <!DOCTYPE html>
 
 <html class="no-js">
@@ -7,7 +7,7 @@
     	<meta charset="utf-8"/>
     	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
 		
-        <title>@title</title>
+        <title>Natural Cosmetics Recipes | Do it yourself recipes that work</title>
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
 		 
 		<!--[if lt IE 9]>
@@ -94,11 +94,7 @@
 		
     </head>
     <body>
-    	@if(request.path=="/"){
-    		@header_main(recipes)
-    	} else {
-    		@header_page()
-    	}
+    	@header(request.path=="/", currentMenu, recipes)
         @content
         @footer()
     </body>

@@ -1,4 +1,4 @@
-@(recipes: Seq[Recipe])
+@(isMain: Boolean, currentMenu: String, recipes: Seq[Recipe] = Seq())
 
 <!-- HEADER -->
 <header>
@@ -10,13 +10,13 @@
 
 		<!-- nav -->
 		<ul id="nav" class="sf-menu">
-			<li class="current-menu-item">
+			<li id="home">
 				<a href="@routes.Application.index()">HOME</a>
 			</li>
-			<li>
+			<li id="blog">
 				<a href="@routes.BlogController.summary()">BLOG</a>
 			</li>
-			<li>
+			<li id="about">
 				<a href="page.html">ABOUT</a>
 				<ul>
 					<li>
@@ -30,13 +30,15 @@
 					</li>
 				</ul>
 			</li>
-			<li>
+			<li id="contact">
 				<a href="contact.html">CONTACT</a>
 			</li>
-			<li>
+			<li id="recipe-book">
 				<a href="@routes.UserController.recipeBook("5158fde3b6f1b919c88a93ac")">RECIPE BOOK</a>
 				<ul>
-					<li><a href="@routes.RecipeController.add()">Add Recipe</a></li>
+					<li>
+						<a href="@routes.RecipeController.add()">Add Recipe</a>
+					</li>
 				</ul>
 			</li>
 		</ul>
@@ -44,6 +46,7 @@
 		<!-- ends nav -->
 
 		<!-- SLIDER -->
+		@if(isMain) {
 		<div id="home-slider" class="lof-slidecontent">
 
 			<div class="preload">
@@ -53,19 +56,19 @@
 			<!-- slider content -->
 			<div class="main-slider-content" >
 				<ul class="sliders-wrap-inner">
-					
+
 					@for(recipe <- recipes) {
-						<li>
-							<img src="@recipe.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).getFullUrl" title="" alt="alt" />
-							<div class="slider-description">
-								<h4>@recipe.name</h4>
-								<p>
-									@recipe.shortDesc
-								</p>
-							</div>
-						</li>
+					<li>
+						<img src="@recipe.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).getFullUrl" title="" alt="alt" />
+						<div class="slider-description">
+							<h4>@recipe.name</h4>
+							<p>
+								@recipe.shortDesc
+							</p>
+						</div>
+					</li>
 					}
-					
+
 				</ul>
 			</div>
 			<!-- ENDS slider content -->
@@ -75,9 +78,9 @@
 				<div class="navigator-wrapper">
 					<ul class="navigator-wrap-inner">
 						@for(recipe <- recipes) {
-							<li>
-								<img src="@recipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).getFullUrl" title="" alt="alt" />
-							</li>
+						<li>
+							<img src="@recipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).getFullUrl" title="" alt="alt" />
+						</li>
 						}
 					</ul>
 				</div>
@@ -92,8 +95,16 @@
 			<!-- slider nav -->
 
 		</div>
+		}
 		<!-- ENDS SLIDER -->
 
 	</div>
+
+	<script>
+		$(function() {
+			$('#nav > #@currentMenu').addClass("current-menu-item");
+		});
+	</script>
+
 </header>
 <!-- ENDS HEADER -->
