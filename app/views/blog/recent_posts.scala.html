@@ -7,7 +7,7 @@
 		<a href="@routes.BlogController.get(entry.id)" class="thumb"> 
 			@if(entry.entryType=="Post") { 
 				<div>
-					<img style="height: 54px;width: 54px;" src="@routes.Assets.at(entry.url)" alt="Post" />
+					<img style="height: 54px;width: 54px;" src="@entry.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).getFullUrl" alt="Post" />
 				</div> 
 			} else { 
 				<img src="@routes.Assets.at("img/dummies/54x54.gif")" alt="Post" /> 
