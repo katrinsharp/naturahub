@@ -1,0 +1,193 @@
+@(entryForm: Form[BlogEntrySubmit], photos: Seq[S3Photo] = Seq())(implicit request: RequestHeader)
+
+<!-- reply move form -->
+<!--script src="@routes.Assets.at("javascripts/moveform.js")"></script-->
+
+@import views.html.helper._
+
+@input(fieldName: String, required: Boolean, label: String, hint: String, value: String, nId: String = "") = {
+		
+		<label for="@entryForm(fieldName).name">@label @if(required){<span class="input_required">*</span>} 
+			@if(entryForm(fieldName+nId).hasErrors){
+				<span class="error">@Messages(entryForm(fieldName+nId).error.head.message)</span>
+			}
+		</label>
+		<input id="@{entryForm(fieldName).name+nId}" name="@{entryForm(fieldName).name+nId}" title="@hint" type="text" value="@value" class="form-poshytip" />	
+		
+}
+
+@textarea(fieldName: String, required: Boolean, label: String, hint: String, value: String) = {
+	
+		<label for="@entryForm(fieldName).name">@label @if(required){<span class="input_required">*</span>} 
+			@if(entryForm(fieldName).hasErrors){
+				<span class="error">@Messages(entryForm(fieldName).error.head.message)</span>
+			}
+		</label>
+		<textarea  rows="5" cols="20" class="form-poshytip" id="@{entryForm(fieldName).name}" name="@{entryForm(fieldName).name}" title="@hint">
+			@value
+		</textarea>
+}
+
+@selected(val1: String, val2: String) = {
+	@if(val1==val2) {
+		selected="selected"
+	} else {
+		""
+	}
+}
+
+@atOrEmpty(i: Int, photos: Seq[S3Photo]) = {
+	
+	@if(photos.length > i) {
+		@photos(i).getFullUrl
+	} else {
+		http://www.placehold.it/200x80/EFEFEF/AAAAAA&text=no+image
+	}	
+}
+
+@main("blog") {
+
+<body class="page" onload="">
+	
+	<!-- MAIN -->
+	<div id="main">
+		<div class="wrapper cf">
+
+			<!-- page content-->
+			<div id="page-content" class="cf">
+
+				<p>
+					<label>@if(entryForm("blogentry.id").value.nonEmpty){EDIT}else{ADD} POST</label>
+				</p>
+				<p>
+					Use this form to @if(entryForm("blogentry.id").value.nonEmpty){edit your great post to be even better}else{create cool and informative post}.
+				</p>
+				<!-- form -->
+				@helper.form(action = routes.BlogController.submitBlogEntry, 'enctype -> "multipart/form-data",  'id -> "entryForm") {
+					
+
+						<p>
+							 @input("blogentry.name", true, "Post Name", "Enter post name", entryForm("blogentry.name").value.getOrElse(""))
+						</p>
+						
+						<p>
+							@textarea("blogentry.content", true, "Content", "Enter the post itself.", entryForm("blogentry.content").value.getOrElse(""))
+						</p>
+						
+						<p>
+							 @input("blogentry.tags", true, "Tags", "creams, toxins, etc.", 
+								repeat(entryForm("blogentry.tags"), min = 1) { ing =>
+                					Html(ing.value.getOrElse(""))
+       							}.foldLeft("")((b,a)=>a+", "+b).dropRight(2),
+       							"[0]")
+						</p>
+						
+						<p>
+							 @input("blogentry.url", false, "URL to video", "Enter url, i.e. http://www.youtube.com/embed/YE7VzlLtp-4", entryForm("blogentry.url").value.getOrElse(""))
+						</p>
+						
+						<!-- file upload -->
+						<p>
+						<label for="photos">Photo
+							
+							@if(entryForm("blogentry.photos").hasErrors){
+								<span class="error">@Messages(entryForm("blogentry.photos").error.head.message)</span>
+							}
+							
+						</label>
+						<div class="heading">If URL to video is present, photo will be ignored</div>	
+						@for(i <- 0 to 0) {
+							
+							@if(i < photos.length) {
+								<div class="fileupload fileupload-exists" data-provides="fileupload" id="@photos(i).key">
+									
+									<input type="hidden" value="@photos(i).key" name="@{"removed["+i+"].photoId"}" id="@{"removed["+i+"].photoId"}"/>
+									<input type="hidden" value="@photos(i).metadata.originKey" name="@{"removed["+i+"].originKey"}" id="@{"removed["+i+"].originKey"}"/>
+									<input type="hidden" value="false" name="@{"removed["+i+"].removedPhoto"}" id="@{"removed["+i+"].removedPhoto"}" class="removedPhoto"/>
+									
+									<div class="fileupload-new thumbnail" style="width: 200px; height: 80px;">
+										<img src="http://www.placehold.it/200x80/EFEFEF/AAAAAA&text=no+image" />
+									</div>	
+									<div class="fileupload-preview fileupload-exists thumbnail" style="width: 200px; height: 80px;">
+										<img src="@photos(i).getFullUrl" />
+									</div>	
+									<div>
+										<span class="btn btn-file">
+											<span class="fileupload-new">Select image</span>
+											
+											<span class="fileupload-exists">Change</span>
+											
+											<input type="file" name="photo" multiple />
+										</span>
+										<a href="#" class="btn fileupload-exists removePhoto" data-dismiss="fileupload">Remove</a>
+									</div>
+								</div>	
+							} else {
+								<div class="fileupload fileupload-new" data-provides="fileupload">	
+									<div class="fileupload-new thumbnail" style="width: 200px; height: 80px;">
+										<img src="http://www.placehold.it/200x80/EFEFEF/AAAAAA&text=no+image" />
+									</div>	
+									<div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 80px; line-height: 20px;">
+									</div>	
+									<div>
+										<span class="btn btn-file">
+											<span class="fileupload-new">Select image</span>
+											<span class="fileupload-exists">Change</span>
+											<input type="file" name="photo" multiple />
+										</span>
+										<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+									</div>
+								</div>
+							}	
+						}
+						<div style="clear: both"></div>
+						</p>
+						<!-- end of file upload -->
+
+						<!-- hidden -->
+						<input type="hidden" value="@entryForm("blogentry.id").value.getOrElse("-1")" name="blogentry.id" id="blogentry.id" />
+						<input type="hidden" value="@entryForm("blogentry.created").value.getOrElse(org.joda.time.format.ISODateTimeFormat.date().print(org.joda.time.DateTime.now()))" name="blogentry.created" id="blogentry.created" />
+						<input type="hidden" value="@entryForm("blogentry.by").value.getOrElse("Katrin")" name="blogentry.by" id="blogentry.by" />
+						<input type="hidden" value="@entryForm("blogentry.commentsNum").value.getOrElse("0")" name="blogentry.commentsNum" id="blogentry.commentsNum" />
+						<!-- ENDS hidden -->
+
+						<p>
+							<div style="float: right;width: 100px;height: 20px;font-size: 18px" value="Submit" class="link-button" id="submit">Submit</div>
+							<!-- Meanwhile there is no general error -->
+							<span id="error" class="warning" style="visibility: hidden">Message</span>
+						</p>
+					
+
+				}
+				<!-- Meanwhile this form is not ajax, so we it's not getting back here if success -->
+				<p id="sent-form-msg" class="success" style="visibility: hidden">
+					Form data sent. Thanks for your comments.
+				</p>
+				<!-- ENDS form -->
+
+			</div>
+			<!-- ENDS page content-->
+
+		</div><!-- ENDS WRAPPER -->
+	</div>
+	<!-- ENDS MAIN -->
+</body>
+<script>
+	function bindtoSubmit(e) {
+		e.preventDefault();
+		$("#entryForm").submit();
+		return false;
+	}
+	function bindtoPhotoRemove(e) {
+		e.preventDefault();
+		$(this).parent().siblings(".removedPhoto").val("true");
+		$(this).fileupload('clear');
+		return false;
+	}
+	$(function() {
+		$('#entryForm #submit').bind('click', bindtoSubmit);
+		$('.removePhoto').bind('click', bindtoPhotoRemove);
+		$('.selectpicker').selectpicker();
+	});
+</script>
+}

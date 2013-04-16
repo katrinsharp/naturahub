@@ -17,6 +17,8 @@ import play.api.libs.functional.syntax._
 import org.joda.time.DateTime
 import controllers.Application
 
+case class photos(key: String, originKey: String, isRemoved: Boolean)
+
 
 class S3Photo(
 		val bucket: String = S3Blob.s3Bucket, 

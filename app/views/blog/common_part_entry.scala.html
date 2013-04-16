@@ -3,7 +3,7 @@
 @entry.entryType match {
 						case "Post" => {<article class="format-standard">
 											<div class="feature-image">
-												<a href="single.html"> <img src="@routes.Assets.at(entry.url)" alt="alt text" /> </a>
+												<a href="single.html"> <img src="@entry.photos.find(_.metadata.typeOf == "slider").getOrElse(S3Photo.EMPTY).getFullUrl" alt="alt text" /> </a>
 											</div>
 										}
 						case "Video" => {<article class="format-video">

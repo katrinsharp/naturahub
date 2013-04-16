@@ -18,6 +18,9 @@ GET		/blog/category										controllers.BlogController.byCategory(categoryId: S
 GET		/blog/tag											controllers.BlogController.byTag(tagName: String)
 GET		/blog/user											controllers.BlogController.byUser(userId: String)
 GET		/blog/archive/year									controllers.BlogController.archiveByYear(year: Int)
+GET		/blog/add											controllers.BlogController.add
+GET		/blog/edit/:id										controllers.BlogController.edit(id: String)
+POST	/blog/submitBlogEntry								controllers.BlogController.submitBlogEntry
 GET		/blog/:id											controllers.BlogController.get(id: String)
 GET 	/blog/recent/:num									controllers.BlogController.getRecentEntries(num: Int)
 

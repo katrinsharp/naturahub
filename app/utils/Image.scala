@@ -14,6 +14,7 @@ object Image {
 	
 	val RECIPE_SLIDER_SIZE = (940, 367)
 	val RECIPE_PREVIEW_WIDTH = 300
+	val BLOG_ENTRY_PREVIEW_SET = 54
 	
 	def asSlider(inputFile: File): BufferedImage = {
 		//resizeAndSave(inputFile, RECIPE_SLIDER_SIZE._1, RECIPE_SLIDER_SIZE._2)
@@ -23,10 +24,18 @@ object Image {
 		scaledImage2
 	}
 	
-	def asPreview(inputFile: File): BufferedImage = {
+	private def asPreview(inputFile: File, width: Int): BufferedImage = {
 		val originalImage = ImageIO.read(inputFile)
 		val scaledImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, RECIPE_PREVIEW_WIDTH)
 		scaledImage
+	}
+	
+	def asPreviewRecipe(inputFile: File): BufferedImage = {
+		asPreview(inputFile, RECIPE_PREVIEW_WIDTH)
+	}
+	
+	def asPreviewBlogEntry(inputFile: File): BufferedImage = {
+		asPreview(inputFile, BLOG_ENTRY_PREVIEW_SET)
 	}
 	
 	def asIs(inputFile: File): BufferedImage = {

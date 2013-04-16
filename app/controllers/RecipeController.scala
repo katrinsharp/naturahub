@@ -31,11 +31,11 @@ import models.S3PhotoMetadata
 import models.RecipePhase
 import org.joda.time.DateTime
 import utils.UniqueCode
+import models.photos
 
 //https://github.com/sgodbillon/reactivemongo-demo-app/blob/master/app/controllers/Application.scala
 
 case class RecipeSubmit(recipe: Recipe, s: Seq[photos] = List())
-case class photos(key: String, originKey: String, isRemoved: Boolean)
 
 object RecipeController extends Controller with MongoController {
 
@@ -118,7 +118,7 @@ object RecipeController extends Controller with MongoController {
 								photos = photos :+ original 
 								photos = photos :+ S3Photo.save(Image.asSlider(file.ref.file), "slider", original.key)
 								if(!isPreviewSet) {
-									photos = photos :+ S3Photo.save(Image.asPreview(file.ref.file), "preview", original.key)
+									photos = photos :+ S3Photo.save(Image.asPreviewRecipe(file.ref.file), "preview", original.key)
 									isPreviewSet = true
 								} 
 							}
