@@ -9,7 +9,7 @@ object ApplicationBuild extends Build {
   	
   resolvers += "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
   resolvers += "webjars" at "http://webjars.github.com/m2"
-
+  
   val appDependencies = Seq(
     // Add your project dependencies here,
     //jdbc,
@@ -18,12 +18,13 @@ object ApplicationBuild extends Build {
   	"com.amazonaws" % "aws-java-sdk" % "1.3.11",
     "org.imgscalr" % "imgscalr-lib" % "4.2",
     "org.webjars" % "webjars-play" % "2.1.0",
-    "org.webjars" % "bootstrap" % "2.3.1"
+    "org.webjars" % "bootstrap" % "2.3.1",
+    "securesocial" %% "securesocial" % "master-SNAPSHOT"
   )
 
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    // Add your own project settings here
+    resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
   )
 
 }

@@ -24,11 +24,12 @@ import utils.Image
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.concurrent.Future
+import securesocial.core.{Identity, Authorization}
 
 case class BlogCategory(id: String, name: String, numberOfEntries: Int)
 case class BlogEntrySubmit(entry: BlogEntry, s: Seq[photos] = List())
 
-object BlogController extends Controller with MongoController {
+object BlogController extends Controller with MongoController with securesocial.core.SecureSocial {
 
 	val categories = Seq(BlogCategory("1", "General", 67), BlogCategory("2", "Video", 10), BlogCategory("3", "Trivia", 3))
 

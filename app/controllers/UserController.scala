@@ -31,10 +31,11 @@ import models.S3PhotoMetadata
 import models.RecipePhase
 import org.joda.time.DateTime
 import models.User
+import securesocial.core.{Identity, Authorization}
 
 case class recipeSave(userId: String, recipeId: String)
 
-object UserController extends Controller with MongoController {
+object UserController extends Controller with MongoController with securesocial.core.SecureSocial {
 	
 	val recipeManipulateForm: Form[recipeSave] = Form(
 		mapping(

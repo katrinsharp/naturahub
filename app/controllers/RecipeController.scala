@@ -32,12 +32,11 @@ import models.RecipePhase
 import org.joda.time.DateTime
 import utils.UniqueCode
 import models.photos
-
-//https://github.com/sgodbillon/reactivemongo-demo-app/blob/master/app/controllers/Application.scala
+import securesocial.core.{Identity, Authorization}
 
 case class RecipeSubmit(recipe: Recipe, s: Seq[photos] = List())
 
-object RecipeController extends Controller with MongoController {
+object RecipeController extends Controller with MongoController with securesocial.core.SecureSocial {
 
 	val recipeForm: Form[RecipeSubmit] = Form(
 		mapping(
@@ -204,7 +203,7 @@ object RecipeController extends Controller with MongoController {
 		}
 	}
 
-	def add() = Action { implicit request =>
+	def add() = SecuredAction { implicit request =>
 		Ok(views.html.recipes.recipe_form(recipeForm))
 	}
 	

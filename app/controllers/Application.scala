@@ -11,8 +11,9 @@ import play.api.libs.json._
 import play.api.Play.current
 import models.Recipe
 import models.User
+import securesocial.core.{Identity, Authorization}
 
-object Application extends Controller with MongoController {
+object Application extends Controller with MongoController with securesocial.core.SecureSocial {
 
 	val db = ReactiveMongoPlugin.db
 	lazy val recipeCollection = db("recipes")

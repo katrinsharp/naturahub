@@ -15,9 +15,10 @@ import reactivemongo.api.SortOrder.{ Ascending, Descending }
 import org.joda.time.Interval
 import models.Comment
 import scala.util.matching.Regex
+import securesocial.core.{Identity, Authorization}
 
 
-object CommentController extends Controller with MongoController {
+object CommentController extends Controller with MongoController with securesocial.core.SecureSocial {
 	
 	def getByPostId(id: String) = Action { implicit request =>
 		Async {	
