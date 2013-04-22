@@ -6,7 +6,7 @@
 	
 	<!-- MAIN -->
 	<div id="main">
-		<div class="wrapper cf">
+		<div class="wrapper cf" style="width: 100% !important">
 
 			<!-- featured -->
 			<div class="home-featured">
@@ -26,10 +26,10 @@
 					</li>
 					<!--li><a href="#" data-filter=".photo">photo</a></li-->
 				</ul>
-
+				
 				<!-- Filter container -->
-				<div id="filter-container" class="cf">
-					
+				<div id="filter-container" style="margin: 0 auto !important" class="cf">
+					@for(i <- 0 to 5) {
 					@for(recipe <- recipes) {
 						<figure class="@recipe.level">
 							<a href="@routes.RecipeController.get(recipe.id)" class="thumb"><img src="@recipe.photos.find(_.metadata.typeOf == "preview").getOrElse(S3Photo.EMPTY).getFullUrl" alt="alt" /></a>
@@ -38,6 +38,7 @@
 								@recipe.shortDesc
 							</figcaption>
 						</figure>
+					}
 					}
 				</div><!-- ENDS Filter container -->
 
