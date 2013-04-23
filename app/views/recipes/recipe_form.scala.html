@@ -70,6 +70,8 @@
 							@input("recipe.name", true, "Recipe Name", "Enter recipe name", recipeForm("recipe.name").value.getOrElse(""))
 						</p>
 						
+						<a href="#" id="username" data-type="text" data-original-title="Enter username">superuser</a>
+						
 						<p>
 							@textarea("recipe.shortDesc", true, "Short description", "Enter short description. It will show up in search results.", recipeForm("recipe.shortDesc").value.getOrElse(""))
 						</p>
@@ -222,6 +224,7 @@
 		$('#recipeForm #submit').bind('click', bindtoSubmit);
 		$('.removePhoto').bind('click', bindtoPhotoRemove);
 		$('.selectpicker').selectpicker();
+		$('#username').editable();
 	});
 </script>
 }
